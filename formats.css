@@ -1,0 +1,460 @@
+.picta-formats,
+.picta-personalization,
+.picta-faq {
+  scroll-margin-top: 5.5rem;
+}
+
+.picta-formats {
+  padding-block: clamp(4.5rem, 8vw, 7.5rem);
+  background: var(--paper);
+}
+
+.picta-formats-heading {
+  max-width: 42rem;
+  margin-inline: auto;
+  margin-bottom: clamp(2rem, 4vw, 3.5rem);
+  text-align: center;
+}
+
+.picta-formats-heading .section-label {
+  justify-content: center;
+}
+
+.picta-formats-heading > p:last-child {
+  margin: .8rem 0 0;
+  color: var(--muted);
+  font-size: 1.075rem;
+}
+
+.picta-format {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 1px solid var(--line);
+  border-radius: 1.55rem;
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+  background: #fff;
+  color: var(--ink);
+  transition: border-color 180ms var(--ease, ease), box-shadow 180ms var(--ease, ease);
+}
+
+.picta-format-custom {
+  border-color: #a0dbe4;
+  background: var(--brand-soft);
+}
+
+.picta-format-icon {
+  display: grid;
+  width: 3.2rem;
+  aspect-ratio: 1;
+  place-items: center;
+  margin-bottom: 1.75rem;
+  border-radius: .95rem;
+  color: var(--brand-ink);
+}
+
+.picta-format-icon .icon {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.picta-format-icon-digital {
+  background: var(--brand-soft);
+}
+
+.picta-format-icon-custom {
+  background: var(--white);
+}
+
+.picta-format-icon-physical {
+  background: var(--lavender);
+}
+
+.picta-format-kind {
+  margin: 0 0 .3rem;
+  color: var(--muted);
+  font-size: .83rem;
+  font-weight: 650;
+}
+
+.picta-format h3 {
+  margin: 0;
+  font-size: clamp(1.35rem, 2vw, 1.7rem);
+  letter-spacing: -.035em;
+  line-height: 1.2;
+}
+
+.picta-format-price {
+  display: flex;
+  align-items: baseline;
+  gap: .35rem;
+  margin: 1rem 0;
+  color: inherit;
+  font-size: .95rem;
+  font-weight: 750;
+}
+
+.picta-format-price strong {
+  font-size: 2.85rem;
+  letter-spacing: -.06em;
+  line-height: 1.05;
+}
+
+.picta-format-list {
+  display: grid;
+  gap: .7rem;
+  align-content: start;
+  flex: 1;
+  width: 100%;
+  margin: .25rem 0 1.5rem;
+  padding: 1.2rem 0 0;
+  border-top: 1px solid var(--control-line);
+  list-style: none;
+  font-size: .91rem;
+}
+
+.picta-format-list li {
+  display: flex;
+  gap: .55rem;
+  align-items: flex-start;
+}
+
+.picta-format-list .icon {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 1rem;
+  margin-top: .16em;
+  color: var(--brand-ink);
+}
+
+.picta-format > .btn {
+  justify-content: space-between;
+  width: 100%;
+  gap: .55rem;
+}
+
+.picta-format-note {
+  margin: 1.2rem 0 0;
+  color: var(--muted);
+  text-align: center;
+  font-size: .875rem;
+}
+
+.picta-personalization {
+  padding-block: clamp(2rem, 5vw, 4.5rem);
+  background: var(--paper);
+}
+
+.picta-request-panel {
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  gap: clamp(2rem, 5vw, 4.75rem);
+  align-items: start;
+  padding: clamp(2rem, 5vw, 4.5rem);
+  border: 1px solid var(--lavender-line);
+  border-radius: clamp(1.6rem, 4vw, 2.75rem);
+  background: var(--lavender);
+  color: var(--ink);
+}
+
+.picta-request-intro {
+  padding-block: clamp(.5rem, 2vw, 1.25rem);
+}
+
+.picta-request-intro .section-title {
+  color: inherit;
+  font-size: clamp(2.15rem, 4.3vw, 3.65rem);
+}
+
+.picta-request-intro > p:last-of-type {
+  max-width: 27rem;
+  margin: 1.05rem 0 0;
+  color: var(--muted);
+  font-size: 1.075rem;
+}
+
+.picta-request-art {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  margin: clamp(1.7rem, 5vw, 3.2rem) 0 .7rem .4rem;
+  pointer-events: none;
+}
+
+.picta-request-art span {
+  display: grid;
+  width: clamp(3.4rem, 6.7vw, 6rem);
+  aspect-ratio: 1;
+  place-items: center;
+  border: 3px solid #fff8;
+  border-radius: clamp(.9rem, 1.8vw, 1.4rem);
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+  box-shadow: 0 .8rem 1.2rem #073b481c;
+  transform: rotate(-12deg);
+}
+
+.picta-request-art span:nth-child(2) {
+  z-index: 1;
+  margin-inline: -.45rem;
+  background: var(--brand);
+  color: var(--brand-dark);
+  transform: translateY(-12%) rotate(7deg);
+}
+
+.picta-request-art span:nth-child(3) {
+  background: var(--lavender-line);
+  transform: rotate(15deg);
+}
+
+.picta-request-art .icon {
+  width: 42%;
+  height: 42%;
+}
+
+.picta-request-workspace {
+  min-width: 0;
+  display: grid;
+  gap: .75rem;
+}
+
+.picta-request-form,
+.picta-request-result {
+  padding: clamp(1.15rem, 3vw, 2rem);
+  border-radius: 1.45rem;
+  background: #fff;
+  color: var(--ink);
+}
+
+.picta-request-form h3,
+.picta-request-result h3 {
+  margin: 0 0 1.3rem;
+  font-size: clamp(1.3rem, 2.2vw, 1.6rem);
+  letter-spacing: -.03em;
+  line-height: 1.2;
+}
+
+.picta-field {
+  display: grid;
+  gap: .4rem;
+  align-content: start;
+  min-width: 0;
+  margin-bottom: .95rem;
+}
+
+.picta-field .form-label {
+  margin: 0;
+  font-size: .875rem;
+  font-weight: 650;
+}
+
+.picta-field select,
+.picta-field textarea {
+  width: 100%;
+  min-height: 2.85rem;
+  padding: .65rem .7rem;
+  border: 1px solid #859fa5;
+  border-radius: .65rem;
+  background-color: var(--soft);
+  color: inherit;
+  font: inherit;
+  font-size: 1rem;
+  scroll-margin-block-start: 6rem;
+}
+
+.picta-field .form-select {
+  padding-inline-end: 2.15rem;
+}
+
+.picta-field :is(.form-control, .form-select):focus {
+  border-color: var(--focus);
+  box-shadow: none;
+}
+
+.picta-field :is(.form-control, .form-select):focus-visible {
+  outline: 2px solid var(--focus);
+}
+
+.picta-field textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+.picta-field textarea::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
+.picta-field :is(.form-control, .form-select)[aria-invalid="true"] {
+  border-color: #a2312c;
+}
+
+.picta-field-hint,
+.picta-field-error,
+.picta-request-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: .8rem;
+  line-height: 1.45;
+}
+
+.picta-field-error {
+  color: #a2312c;
+  font-weight: 650;
+}
+
+.picta-request-note {
+  margin-top: .75rem;
+}
+
+.picta-request-result {
+  background: var(--brand-soft);
+  animation: picta-result-enter 280ms var(--ease, ease) both;
+}
+
+.picta-request-result[hidden],
+.picta-field-error[hidden] {
+  display: none;
+}
+
+.picta-request-result h3 {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  scroll-margin-block-start: 6rem;
+}
+
+.picta-request-result h3 .icon {
+  flex-shrink: 0;
+  color: var(--brand-ink);
+}
+
+.picta-request-result dl {
+  display: grid;
+  gap: .65rem;
+  margin: 0 0 1.25rem;
+}
+
+.picta-request-result dt {
+  font-size: .8rem;
+  font-weight: 750;
+}
+
+.picta-request-result dd {
+  margin: .15rem 0 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.picta-faq {
+  padding-block: clamp(4rem, 9vw, 8rem);
+  background: var(--paper);
+}
+
+.picta-faq-grid {
+  display: grid;
+  grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+  gap: clamp(1.5rem, 5vw, 4rem);
+}
+
+.picta-faq-list {
+  border-top: 1px solid var(--line);
+}
+
+.picta-faq-list details {
+  border-bottom: 1px solid var(--line);
+}
+
+.picta-faq-list summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.65rem;
+  padding: .85rem .25rem;
+  color: var(--ink);
+  font-size: clamp(1rem, 1.6vw, 1.12rem);
+  font-weight: 650;
+  list-style: none;
+  cursor: pointer;
+}
+
+.picta-faq-list summary::-webkit-details-marker {
+  display: none;
+}
+
+.picta-faq-list summary .icon {
+  flex-shrink: 0;
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--brand-ink);
+  transition: transform 180ms var(--ease, ease);
+}
+
+.picta-faq-list details[open] summary .icon {
+  transform: rotate(45deg);
+}
+
+.picta-faq-list details p {
+  max-width: 35rem;
+  margin: 0;
+  padding: 0 1.75rem 1.15rem .25rem;
+  color: var(--muted);
+}
+
+@keyframes picta-result-enter {
+  from { opacity: 0; transform: translateY(.45rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (hover: hover) {
+  .picta-format:hover {
+    border-color: #6eb3c0;
+    box-shadow: 0 .75rem 1.8rem #073b4810;
+  }
+
+  .picta-faq-list summary:hover {
+    color: var(--brand-ink);
+  }
+}
+
+@media (max-width: 860px) {
+  .picta-request-panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .picta-request-intro .section-title br {
+    display: none;
+  }
+
+  .picta-request-art {
+    margin-top: 1.7rem;
+  }
+}
+
+@media (max-width: 750px) {
+  .picta-faq-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .picta-format-icon {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 475px) {
+  .picta-request-panel {
+    padding: 1.2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .picta-format,
+  .picta-faq-list summary .icon {
+    transition: none;
+  }
+
+  .picta-request-result {
+    animation: none;
+  }
+}

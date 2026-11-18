@@ -1,0 +1,146 @@
+.site-header .header-inner { gap: clamp(.65rem, 2vw, 1.5rem); }
+.site-header .header-nav { gap: clamp(.75rem, 2vw, 1.7rem); margin-inline-start: auto; }
+
+.account-launch {
+  flex: none;
+  padding-inline: .8rem;
+  min-height: 44px;
+  white-space: nowrap;
+}
+
+.account-dialog {
+  width: min(49rem, calc(100% - 2rem));
+  max-width: none;
+  max-height: calc(100dvh - 2rem);
+  padding: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--line);
+  border-radius: 1.5rem;
+  color: var(--ink);
+  background: var(--paper);
+  box-shadow: 0 24px 80px #073b483d;
+}
+
+.account-dialog::backdrop { background: #082d38a6; }
+html:has(.account-dialog[open]) { overflow: hidden; scrollbar-gutter: stable; }
+
+.account-layout {
+  display: grid;
+  grid-template-columns: minmax(0, .78fr) minmax(0, 1.22fr);
+  min-height: 31rem;
+}
+
+.account-art {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.4rem;
+  padding: 1.9rem;
+  background: linear-gradient(150deg, var(--brand-soft), var(--hero-blue));
+}
+
+.account-art > svg { width: 6.65rem; }
+.account-art img {
+  width: 100%;
+  height: auto;
+  border: 5px solid var(--white);
+  border-radius: 1.1rem;
+  box-shadow: 0 8px 20px #073b481c;
+}
+
+.account-art p {
+  color: var(--brand-dark);
+  font: 400 clamp(1.55rem, 3.6vw, 2.35rem)/1.07 var(--display-font);
+  letter-spacing: -.035em;
+}
+
+.account-panel {
+  position: relative;
+  min-width: 0;
+  padding: 2.6rem 1.9rem 2rem;
+}
+
+.account-panel h2 {
+  margin-block-end: .5rem;
+  padding-inline-end: 2rem;
+  font: 400 clamp(1.6rem, 4.7vw, 2.25rem)/1.1 var(--display-font);
+  letter-spacing: -.035em;
+}
+
+.account-description { color: var(--muted); overflow-wrap: anywhere; }
+.account-close { position: absolute; inset: .65rem .65rem auto auto; width: 44px; height: 44px; }
+.account-close:hover { background: var(--brand-soft); }
+.account-form { display: grid; gap: .85rem; margin-block-start: 1.05rem; }
+.account-field { display: grid; gap: .3rem; }
+.account-field label, .account-field-label { font-size: .875rem; font-weight: 650; }
+.account-field .form-control {
+  min-width: 0;
+  min-height: 46px;
+  border-color: #82999f;
+  border-radius: .7rem;
+}
+
+.account-field .form-control:focus {
+  border-color: var(--focus);
+  box-shadow: 0 0 0 2px var(--brand-soft);
+}
+.account-field .form-control:focus-visible { outline-offset: 2px; }
+.account-field .form-control[aria-invalid="true"] { border-color: #9b2738; }
+.account-field-help, .account-field-error { font-size: .82rem; }
+.account-field-help { color: var(--muted); }
+.account-field-error, .account-alert { color: #9b2738; }
+.account-form dl, .account-email { margin: 0; }
+.account-email { overflow-wrap: anywhere; color: var(--muted); }
+.account-password { position: relative; }
+.account-password .form-control { padding-inline-end: 5.15rem; }
+.account-password > button { position: absolute; inset: 1px 2px 1px auto; padding-inline: .55rem; }
+
+.account-text-button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  padding: 0 .24rem;
+  border: 0;
+  border-radius: .35rem;
+  color: var(--brand-ink);
+  background: transparent;
+  font-size: .86rem;
+  font-weight: 700;
+}
+
+.account-text-button:hover { text-decoration: underline; text-underline-offset: .2em; }
+.account-text-button:disabled { pointer-events: none; }
+.account-forgot { justify-self: end; margin-block: -.5rem; }
+.account-submit { width: 100%; }
+.account-alert, .account-status { font-size: .875rem; overflow-wrap: anywhere; }
+.account-alert:not(:empty), .account-status:not(:empty) { margin-block-start: .65rem; }
+.account-status { color: var(--brand-ink); }
+.account-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 .3rem;
+  margin-block-start: .8rem;
+  padding-block-start: .45rem;
+  border-block-start: 1px solid var(--line);
+  color: var(--muted);
+  font-size: .86rem;
+}
+
+@media (max-width: 780px) {
+  .site-header .menu-toggle { margin-inline-start: auto; }
+  .site-header .header-nav { gap: .24rem; }
+  .account-launch { padding-inline: .65rem; gap: .35rem; }
+}
+
+@media (max-width: 630px) {
+  .account-dialog { width: min(29rem, calc(100% - 1.25rem)); max-height: calc(100dvh - 1.25rem); }
+  .account-layout { display: block; min-height: 0; }
+  .account-art { display: none; }
+  .account-panel { padding: 2.35rem 1.2rem 1.4rem; }
+}
+
+@media print {
+  .account-dialog, .account-launch { display: none; }
+}

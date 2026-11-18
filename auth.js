@@ -30,7 +30,7 @@
 
   const views = {
     login: ["Iniciar sesión", "Entra a tu cuenta Picta con tu correo.", "Iniciar sesión", "register", "¿Primera vez en Picta?"],
-    register: ["Crear cuenta", "Regístrate con tu nombre y correo electrónico.", "Crear cuenta", "login", "¿Ya tienes una cuenta?"],
+    register: ["Crear cuenta", "Regístrate con tu nombre, correo y contraseña para entrar a Picta.", "Crear cuenta", "login", "¿Ya tienes una cuenta?"],
     recover: ["Recuperar contraseña", "Te enviaremos un enlace para elegir una contraseña nueva.", "Enviar enlace", "login"],
     resend: ["Reenviar confirmación", "Solicita un enlace nuevo para verificar tu correo electrónico.", "Enviar confirmación", "login"],
     reset: ["Nueva contraseña", "Elige una contraseña para volver a entrar a tu cuenta Picta.", "Guardar contraseña"],
@@ -43,6 +43,8 @@
   const errors = {
     invalid_credentials: "Revisa tu correo y contraseña e inténtalo de nuevo.",
     email_not_confirmed: "Confirma tu correo antes de iniciar sesión. Puedes pedir un enlace nuevo.",
+    user_already_exists: "Ya hay una cuenta con este correo. Inicia sesión o recupera tu contraseña.",
+    email_exists: "Ya hay una cuenta con este correo. Inicia sesión o recupera tu contraseña.",
     weak_password: "Elige una contraseña más segura que cumpla los requisitos.",
     same_password: "Elige una contraseña distinta de la anterior.",
     over_email_send_rate_limit: "Espera un momento antes de pedir otro correo.",
@@ -264,7 +266,7 @@
     const address = email.value.trim();
     const secret = password.value;
     const action = mode;
-    if (["register", "resend", "recover"].includes(action) && !canUseLinks) {
+    if (["resend", "recover"].includes(action) && !canUseLinks) {
       alert.textContent = "Abre la página desde su dirección web para recibir enlaces por correo. Para probarla en este equipo, usa http://localhost:3000.";
       return;
     }
@@ -277,7 +279,10 @@
         result = await client.auth.signUp({
           email: address,
           password: secret,
-          options: { data: { nombre: name.value.trim() }, emailRedirectTo: redirectUrl }
+          options: {
+            data: { nombre: name.value.trim() },
+            emailRedirectTo: canUseLinks ? redirectUrl : undefined
+          }
         });
       } else if (action === "recover") {
         result = await client.auth.resetPasswordForEmail(address, { redirectTo: redirectUrl });

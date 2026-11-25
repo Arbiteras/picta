@@ -1,9 +1,12 @@
 (() => {
   "use strict";
 
+  const { url, publishableKey } = window.pictaSupabaseConfig ?? {};
+  if (!url || typeof publishableKey !== "string" || !publishableKey.startsWith("sb_publishable_")) return;
+
   window.pictaSupabase = window.supabase?.createClient(
-    "https://ufhncvurcloacpkqocbq.supabase.co",
-    "sb_publishable_YsFHQiZPI9UETrt8BNJtkg_fv45e91u",
+    url,
+    publishableKey,
     {
       auth: { flowType: "implicit" },
       global: {

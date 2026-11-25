@@ -2,3 +2,5 @@ supabase/.temp/
 .env
 .env.*
 !.env.example
+/supabase/migrations/
+/picta-config.local.js

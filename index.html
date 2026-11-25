@@ -3,500 +3,667 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Picta reúne stickers y guías visuales para que niñas, niños y sus familias puedan comunicarse y anticipar actividades.">
-  <meta name="theme-color" content="#fcfdfd">
-  <title>PICTA · Cada día, más claro</title>
+  <meta name="description" content="Explora los tableros digitales, el cuadernillo con fichas de velcro blanco y los pictogramas personalizados de Picta.">
+  <meta name="theme-color" content="#fdfcf0">
+  <title>Tienda Picta · Cada día, más claro</title>
+  <link rel="icon" type="image/png" href="assets/picta-symbol.png">
   <link rel="stylesheet" href="assets/vendor/bootstrap/bootstrap.min.css">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="formats.css">
-  <link rel="stylesheet" href="stickers.css">
-  <link rel="stylesheet" href="auth.css">
-  <script src="app.js" defer></script>
-  <script src="stickers.js" defer></script>
-  <script src="request.js" defer></script>
-  <script src="navigation.js" defer></script>
+  <link rel="stylesheet" href="styles.css?v=10">
+  <link rel="stylesheet" href="formats.css?v=11">
+  <link rel="stylesheet" href="auth.css?v=2">
+  <link rel="stylesheet" href="icon-motion.css">
+  <script src="picta-motion.js?v=3" defer></script>
+  <script src="app.js?v=8" defer></script>
   <script src="assets/vendor/supabase/supabase-2.119.0.js" defer></script>
-  <script src="auth.js" defer></script>
+  <script src="picta-supabase.js" defer></script>
+  <script src="navigation.js?v=4" defer></script>
+  <script src="tienda.js" defer></script>
+  <script src="auth.js?v=2" defer></script>
+  <script src="request.js?v=2" defer></script>
 </head>
-<body>
+<body class="picta-store">
   <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-    <defs>
-      <!-- Use the marks from the supplied brand board. The filter removes its cream backing and applies the specified cyan. -->
-      <filter id="picta-brand-color" color-interpolation-filters="sRGB">
-        <feColorMatrix type="matrix" values="0 0 0 0 .019608  0 0 0 0 .749020  0 0 0 0 .866667  -1.08 0 0 1.03 0"/>
-      </filter>
-    </defs>
-    <symbol id="picta-wordmark" viewBox="379 109 522 133">
-      <image href="assets/picta-identidad.jpeg" width="1280" height="1600" filter="url(#picta-brand-color)"/>
-    </symbol>
-    <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
     <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
-    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
-    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
-    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4"/></symbol>
-    <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M12 3c.8 4.9 3.1 7.2 8 8-4.9.8-7.2 3.1-8 8-.8-4.9-3.1-7.2-8-8 4.9-.8 7.2-3.1 8-8Zm7 13v5m-2.5-2.5h5"/></symbol>
-    <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h7l5 5v13H6zM13 3v6h5M9 13h6m-6 4h6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path pathLength="1" d="m4 12 5 5L20 6"/></symbol>
     <symbol id="i-box" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5ZM3 8v8l9 5 9-5V8m-9 5v8m-4.5-15.5 9 5"/></symbol>
     <symbol id="i-location" viewBox="0 0 24 24"><path d="M19 10c0 5-7 10-7 10S5 15 5 10a7 7 0 0 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
     <symbol id="i-layers" viewBox="0 0 24 24"><rect x="7" y="3" width="13" height="14" rx="3"/><path d="M16 21H7a3 3 0 0 1-3-3V8"/></symbol>
     <symbol id="i-play" viewBox="0 0 24 24"><path d="m9 5 11 7-11 7z"/></symbol>
-    <symbol id="i-account" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></symbol>
   </svg>
 
   <a class="skip-link" href="#contenido">Saltar al contenido</a>
-  <header class="site-header">
-    <div class="container-fluid picta-container header-inner">
-      <a href="#inicio" class="wordmark" aria-label="PICTA, inicio">
-        <svg viewBox="0 0 522 133" aria-hidden="true" focusable="false"><use href="#picta-wordmark"/></svg>
-      </a>
-      <button class="menu-toggle icon-button" id="menu-toggle" type="button" aria-controls="main-menu" aria-expanded="false" aria-label="Abrir menú">
-        <svg class="icon menu-open" aria-hidden="true"><use href="#i-menu"/></svg>
-        <svg class="icon menu-close" aria-hidden="true"><use href="#i-close"/></svg>
-      </button>
-      <nav id="main-menu" class="header-nav" aria-label="Navegación principal">
-        <a href="#stickers">Stickers</a>
-        <a href="#colecciones">Colecciones</a>
-        <a href="#guia">Para familias</a>
-        <a href="#formatos">Formatos</a>
-        <a class="btn btn-primary header-cta" href="#personalizacion">Personalizar <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
-      </nav>
-      <button class="btn btn-outline-primary account-launch" id="account-launch" type="button" aria-haspopup="dialog" aria-controls="account-dialog" hidden>
-        <svg class="icon" aria-hidden="true"><use href="#i-account"/></svg>
-        <span>Iniciar sesión</span>
-      </button>
-    </div>
-  </header>
+  <header class="site-header" data-picta-header="store"></header>
+  <script src="site-shell.js?v=4"></script>
 
   <main id="contenido">
     <section class="hero-band" id="inicio" aria-labelledby="hero-title">
+      <div class="hero-wave" aria-hidden="true"><span></span></div>
       <div class="hero container-fluid picta-container">
         <div class="hero-copy">
-          <p class="section-label"><span class="section-dot" aria-hidden="true"></span> Pictogramas y rutinas visuales</p>
+          <p class="section-label">Pictogramas para la vida diaria</p>
           <h1 id="hero-title">Cada día,<br><span>más claro.</span></h1>
-          <p>Con Picta, niñas y niños pueden expresar lo que necesitan y ver qué viene después. Prueben los stickers en familia.</p>
-          <div class="hero-actions d-flex flex-wrap gap-2">
-            <a class="btn btn-primary" href="#stickers">Probar stickers <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
-            <a class="btn btn-outline-primary" href="#guia">Guía para familias</a>
+          <p>Apoyos visuales para organizar rutinas, expresar necesidades y saber qué viene después.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#formatos">Ver productos <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+            <a class="btn btn-outline-primary" href="#stickers">Probar gratis</a>
           </div>
         </div>
-        <figure class="hero-visual">
-          <img src="assets/kit-picta.webp" alt="Caja Picta en crema y turquesa junto a tres tarjetas de rutina: despertar, cepillarse y preparar la mochila." width="1448" height="1086" fetchpriority="high">
-          <figcaption><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg> Tarjetas de rutina <span>·</span> Prototipo</figcaption>
+        <figure class="shop-hero-art">
+          <a class="shop-hero-stage" href="#cuadernillo" aria-label="Ver Mi diario visual">
+            <img src="assets/cuadernillo/mi-diario-visual.webp" width="1536" height="1024" alt="Mi diario visual abierto con fichas de personas, emociones y rutinas, junto a su portada" fetchpriority="high">
+          </a>
+          <figcaption>
+            <span><strong>Mi diario visual</strong> <span>Fichas con velcro blanco</span></span>
+            <a href="#cuadernillo">Ver ficha <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+          </figcaption>
         </figure>
       </div>
+      <button class="icon-button hero-wave-toggle" type="button" aria-label="Pausar animación del fondo" aria-pressed="false" hidden>
+        <svg class="icon hero-wave-pause" aria-hidden="true" viewBox="0 0 24 24"><path d="M9 5v14m6-14v14"/></svg>
+        <svg class="icon hero-wave-play" aria-hidden="true"><use href="#i-play"/></svg>
+      </button>
     </section>
 
-    <div class="benefit-band">
-      <ul class="benefit-strip container-fluid picta-container" aria-label="Características de PICTA">
-        <li><svg class="icon" aria-hidden="true"><use href="#i-location"/></svg> Pensado en Bolivia</li>
-        <li><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg> Digital e imprimible</li>
-        <li><svg class="icon" aria-hidden="true"><use href="#i-sparkles"/></svg> Adaptable a cada rutina</li>
-      </ul>
-    </div>
-
-    <section class="sticker-section block" id="stickers" aria-labelledby="stickers-title">
+    <section class="picta-formats" id="formatos" aria-labelledby="formatos-title">
       <div class="container-fluid picta-container">
-        <header class="section-heading split-heading">
-          <h2 class="section-title" id="stickers-title">Mis stickers</h2>
-          <p class="sticker-instructions">Arrastra un sticker a una casilla. En una pantalla táctil, mantén presionado para arrastrar o toca el sticker y luego la casilla.</p>
+        <header class="picta-formats-heading">
+          <div>
+            <h2 class="section-title" id="formatos-title">Productos</h2>
+            <p>Tableros para usar en pantalla y fichas con velcro blanco para llevar a la mesa.</p>
+          </div>
         </header>
-        <noscript><p class="noscript-note">Activa JavaScript para usar los stickers.</p></noscript>
-        <div id="sticker-workspace" hidden>
-          <div class="segmented-controls sticker-modes" role="group" aria-label="Elegir tablero">
-            <button type="button" data-sticker-mode="day" aria-pressed="true" aria-controls="sticker-board">Mi día</button>
-            <button type="button" data-sticker-mode="phrases" aria-pressed="false" aria-controls="sticker-board">Armar frases</button>
-          </div>
-          <div class="sticker-layout">
-            <section class="studio-panel sticker-bank" aria-labelledby="sticker-bank-title">
-              <div class="sticker-panel-heading">
-                <h3 id="sticker-bank-title">Elige un sticker</h3>
-                <p id="sticker-count"></p>
-              </div>
-              <ul class="sticker-bank-grid" id="sticker-bank" role="list"></ul>
-              <div class="sticker-bank-tools">
-                <p id="sticker-picked"></p>
-                <button class="btn btn-outline-primary" id="sticker-show-slots" type="button" aria-controls="sticker-board">
-                  Ver casillas <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
-                </button>
-              </div>
-            </section>
-            <section class="studio-panel sticker-board" id="sticker-board" aria-labelledby="sticker-board-title">
-              <div class="sticker-panel-heading">
-                <h3 id="sticker-board-title">Mi día</h3>
-              </div>
-              <div class="sticker-board-tools">
-                <p id="sticker-status" role="status"></p>
-                <button class="btn btn-link" id="sticker-return" type="button" hidden>Devolver al banco</button>
-              </div>
-              <div id="sticker-rows"></div>
-            </section>
-          </div>
+        <div class="picta-format-grid">
+          <article class="picta-format picta-format-digital" data-store-format="digital" id="producto-digital">
+            <div class="picta-format-media">
+              <img class="catalog-essentials" src="assets/productos/picta-esencial.webp" width="1240" height="810" alt="Tablero digital Mi día con fichas de rutinas" loading="lazy" decoding="async">
+            </div>
+            <div class="picta-format-body">
+              <p class="picta-format-kind">Picta Digital</p>
+              <h3 data-store-name>Picta Esencial</h3>
+              <p class="picta-format-price">Bs <strong data-store-price>59</strong> <span>/ mes</span></p>
+              <p class="picta-format-description">4 tableros, 4 páginas de fichas y 57 pictogramas.</p>
+              <a class="btn btn-primary" href="#acceso-digital">Ver acceso digital <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+            </div>
+          </article>
+          <article class="picta-format picta-format-fisico" data-store-format="fisico" id="producto-fisico">
+            <div class="picta-format-media">
+              <img class="catalog-booklet" src="assets/cuadernillo/mi-diario-visual.webp" width="1536" height="1024" alt="Cuadernillo Mi diario visual abierto y cerrado" loading="lazy" decoding="async">
+            </div>
+            <div class="picta-format-body">
+              <p class="picta-format-kind">Picta Físico</p>
+              <h3 data-store-name>Mi diario visual</h3>
+              <p class="picta-format-price">Bs <strong data-store-price>499</strong> <span>· Pago único</span></p>
+              <p class="picta-format-description">Cuadernillo con 57 pictogramas y velcro blanco.</p>
+              <a class="btn btn-primary" href="#cuadernillo">Ver cuadernillo <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+            </div>
+            <div class="shop-packages catalog-packages">
+              <h4>Paquetes adicionales</h4>
+              <ul role="list">
+                <li><a href="#cuadernillo" data-product-extra="fisico-10"><span><strong>Mi mundo</strong><small>10 pictogramas físicos personalizados</small></span><span class="shop-package-price">Bs 79</span></a></li>
+                <li><a href="#cuadernillo" data-product-extra="fisico-25"><span><strong>Mi universo</strong><small>25 pictogramas físicos personalizados</small></span><span class="shop-package-price">Bs 149</span></a></li>
+                <li><a href="#cuadernillo" data-product-extra="fisico-50"><span><strong>A mi medida</strong><small>50 pictogramas físicos personalizados</small></span><span class="shop-package-price">Bs 249</span></a></li>
+              </ul>
+            </div>
+
+          </article>
         </div>
       </div>
     </section>
 
-    <section class="collections block container-fluid picta-container" id="colecciones" aria-labelledby="collections-title">
-      <header class="section-heading split-heading">
-        <div>
-          <p class="section-label">Colecciones</p>
-          <h2 class="section-title" id="collections-title">Un recurso para<br>cada momento.</h2>
-        </div>
-        <p>Elige una colección para ver un ejemplo de cómo usar sus pictogramas en una situación cotidiana.</p>
-      </header>
-      <div class="row row-cols-2 row-cols-lg-4 g-3 collection-grid">
-        <div class="col">
-          <a class="collection-card collection-hogar h-100" href="#ejemplo-hogar">
-            <span class="collection-art" aria-hidden="true"></span>
-            <div class="collection-info"><div><h3>Hogar</h3><p>Comidas, higiene y rutinas.</p></div><span class="collection-arrow"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></span></div>
-          </a>
-        </div>
-        <div class="col">
-          <a class="collection-card collection-escuela h-100" href="#ejemplo-escuela">
-            <span class="collection-art" aria-hidden="true"></span>
-            <div class="collection-info"><div><h3>Escuela</h3><p>Clases, recreo y tareas.</p></div><span class="collection-arrow"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></span></div>
-          </a>
-        </div>
-        <div class="col">
-          <a class="collection-card collection-salud h-100" href="#ejemplo-salud">
-            <span class="collection-art" aria-hidden="true"></span>
-            <div class="collection-info"><div><h3>Salud</h3><p>Consultas y cuidado diario.</p></div><span class="collection-arrow"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></span></div>
-          </a>
-        </div>
-        <div class="col">
-          <a class="collection-card collection-ciudad h-100" href="#ejemplo-ciudad">
-            <span class="collection-art" aria-hidden="true"></span>
-            <div class="collection-info"><div><h3>Ciudad</h3><p>Transporte, compras y paseos.</p></div><span class="collection-arrow"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></span></div>
-          </a>
-        </div>
+    <section class="shop-detail shop-detail-physical" id="cuadernillo" tabindex="-1" data-store-format="fisico" aria-labelledby="cuadernillo-title">
+      <div class="container-fluid picta-container">
+        <a class="shop-back" href="#formatos"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg> Volver a productos</a>
+        <form class="product-detail-grid" id="booklet-order" data-product-order="fisico" action="carrito.html" method="get">
+          <input type="hidden" name="agregar" value="fisico">
+          <div class="product-purchase">
+            <p class="section-label">Picta Físico · Cuadernillo con velcro blanco</p>
+            <h2 class="section-title" id="cuadernillo-title" data-store-name>Mi diario visual</h2>
+            <p class="product-description">Organiza el día y expresa necesidades con fichas reutilizables, sin pantalla. Incluye tableros de comunicación y molestias, con pictogramas por categoría al reverso.</p>
+            <dl class="product-includes">
+              <div><dt>Hojas a doble cara</dt><dd>4</dd></div>
+              <div><dt>Pictogramas con velcro blanco</dt><dd>57</dd></div>
+            </dl>
+            <div class="product-buy">
+              <p class="picta-format-price">Bs <strong data-store-price>499</strong> <span>por unidad</span></p>
+              <div class="booklet-quantity">
+                <label for="booklet-quantity">Unidades</label>
+                <div class="booklet-stepper">
+                  <button class="icon-button" type="button" data-quantity-step="-1" aria-label="Restar una unidad" disabled>−</button>
+                  <input class="form-control" id="booklet-quantity" name="cantidad" type="number" inputmode="numeric" min="1" max="10" step="1" value="1" required>
+                  <button class="icon-button" type="button" data-quantity-step="1" aria-label="Sumar una unidad">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="product-add">
+              <p>Total de la selección <output data-product-total for="booklet-quantity" aria-live="polite">Bs 499,00</output></p>
+              <button class="btn btn-primary" type="submit" data-cart-link hidden>Agregar al carrito <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></button>
+            </div>
+            <div class="product-cart-feedback">
+              <p data-cart-feedback role="status" aria-atomic="true"></p>
+              <a href="carrito.html" hidden>Ver carrito</a>
+            </div>
+            <div class="shop-order-feedback">
+              <p data-store-status role="status" tabindex="-1"></p>
+              <button class="btn btn-outline-primary" type="button" data-retry-catalog hidden disabled>Reintentar</button>
+              <noscript><p>Activa JavaScript para consultar la disponibilidad y continuar con el pedido.</p></noscript>
+            </div>
+            <p class="product-fulfillment"><svg class="icon" aria-hidden="true"><use href="#i-location"/></svg><span>Recojo sin costo o envío por <strong data-store-shipping>Bs 25</strong> por pedido.</span></p>
+          </div>
+
+          <section class="booklet-gallery" aria-labelledby="shop-gallery-title">
+            <h3 id="shop-gallery-title">Conoce el cuadernillo</h3>
+            <figure class="booklet-stage">
+              <ul class="booklet-pages booklet-thumbnails" role="list" aria-label="Páginas del cuadernillo físico">
+                <li>
+                  <button type="button" aria-pressed="true" data-image-alt="Mi diario visual abierto con fichas de personas, emociones y rutinas, junto a su portada" aria-controls="booklet-image" title="Cuadernillo completo">
+                    <img src="assets/cuadernillo/mi-diario-visual.webp" width="1536" height="1024" alt="" loading="lazy" decoding="async">
+                    <span class="visually-hidden">Cuadernillo completo</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" aria-pressed="false" aria-controls="booklet-image" title="Mi día">
+                    <img src="assets/productos/vistas/cuadernillo/01.webp" width="1100" height="859" alt="" loading="lazy" decoding="async">
+                    <span class="visually-hidden">Mi día</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" aria-pressed="false" aria-controls="booklet-image" title="Yo comunico">
+                    <img src="assets/productos/vistas/cuadernillo/02.webp" width="1100" height="859" alt="" loading="lazy" decoding="async">
+                    <span class="visually-hidden">Yo comunico</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" aria-pressed="false" aria-controls="booklet-image" title="Puedo decir">
+                    <img src="assets/productos/vistas/cuadernillo/03.webp" width="1100" height="859" alt="" loading="lazy" decoding="async">
+                    <span class="visually-hidden">Puedo decir</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" aria-pressed="false" aria-controls="booklet-image" title="Algo me molesta">
+                    <img src="assets/productos/vistas/cuadernillo/04.webp" width="1100" height="859" alt="" loading="lazy" decoding="async">
+                    <span class="visually-hidden">Algo me molesta</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" aria-pressed="false" aria-controls="booklet-image" title="Personas y emociones">
+                    <img src="assets/productos/vistas/cuadernillo/05.webp" width="1100" height="859" alt="" loading="lazy" decoding="async">
+                    <span class="visually-hidden">Personas y emociones</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" aria-pressed="false" aria-controls="booklet-image" title="Cuidado">
+                    <img src="assets/productos/vistas/cuadernillo/06.webp" width="1100" height="859" alt="" loading="lazy" decoding="async">
+                    <span class="visually-hidden">Cuidado</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" aria-pressed="false" aria-controls="booklet-image" title="Comunicar, alimentos y lugares">
+                    <img src="assets/productos/vistas/cuadernillo/07.webp" width="1100" height="859" alt="" loading="lazy" decoding="async">
+                    <span class="visually-hidden">Comunicar, alimentos y lugares</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" aria-pressed="false" aria-controls="booklet-image" title="Escuela, juguetes y objetos">
+                    <img src="assets/productos/vistas/cuadernillo/08.webp" width="1100" height="859" alt="" loading="lazy" decoding="async">
+                    <span class="visually-hidden">Escuela, juguetes y objetos</span>
+                  </button>
+                </li>
+              </ul>
+              <div class="booklet-image-frame">
+                <img id="booklet-image" src="assets/cuadernillo/mi-diario-visual.webp" width="1536" height="1024" alt="Mi diario visual abierto con fichas de personas, emociones y rutinas, junto a su portada" loading="lazy" decoding="async">
+              </div>
+              <figcaption class="booklet-caption">
+                <p id="booklet-caption" role="status"><strong>Cuadernillo completo</strong><span>1 de 9</span></p>
+                <div class="booklet-controls" hidden>
+                  <button class="icon-button" type="button" data-booklet-step="-1" aria-label="Lámina anterior" aria-controls="booklet-image"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></button>
+                  <button class="icon-button" type="button" data-booklet-step="1" aria-label="Lámina siguiente" aria-controls="booklet-image"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></button>
+                </div>
+              </figcaption>
+            </figure>
+          </section>
+
+          <fieldset class="shop-packages product-packages product-extras" aria-labelledby="booklet-packages-title">
+            <h3 id="booklet-packages-title">Extra opcional</h3>
+            <p>Elige un paquete si quieres sumar pictogramas personalizados.</p>
+            <ul role="list">
+              <li>
+                <label>
+                  <input type="radio" name="extra" value="" checked>
+                  <span><strong>Sin extra</strong></span>
+                </label>
+              </li>
+              <li>
+                <label>
+                  <input type="radio" name="extra" value="fisico-10">
+                  <span><strong>Mi mundo</strong><small>10 pictogramas físicos personalizados</small><small data-extra-in-cart hidden>Ya está en tu carrito</small></span>
+                  <span class="shop-package-price">Bs 79</span>
+                </label>
+              </li>
+              <li>
+                <label>
+                  <input type="radio" name="extra" value="fisico-25">
+                  <span><strong>Mi universo</strong><small>25 pictogramas físicos personalizados</small><small data-extra-in-cart hidden>Ya está en tu carrito</small></span>
+                  <span class="shop-package-price">Bs 149</span>
+                </label>
+              </li>
+              <li>
+                <label>
+                  <input type="radio" name="extra" value="fisico-50">
+                  <span><strong>A mi medida</strong><small>50 pictogramas físicos personalizados</small><small data-extra-in-cart hidden>Ya está en tu carrito</small></span>
+                  <span class="shop-package-price">Bs 249</span>
+                </label>
+              </li>
+            </ul>
+          </fieldset>
+
+        </form>
+      </div>
+    </section>
+
+    <section class="shop-detail shop-detail-digital" id="acceso-digital" tabindex="-1" data-store-format="digital" aria-labelledby="acceso-digital-title">
+      <div class="container-fluid picta-container">
+        <a class="shop-back" href="#formatos"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg> Volver a productos</a>
+        <form class="product-detail-grid" id="digital-order" data-product-order="digital" action="carrito.html" method="get">
+          <input type="hidden" name="agregar" value="digital">
+          <div class="product-purchase">
+            <p class="section-label">Picta Digital</p>
+            <h2 class="section-title" id="acceso-digital-title" data-store-name>Picta Esencial</h2>
+            <p class="product-description">Usa las ocho caras de Mi diario visual en el navegador y guarda las páginas que personalices.</p>
+            <dl class="product-includes">
+              <div><dt>Páginas del cuadernillo digital</dt><dd>8</dd></div>
+              <div><dt>Pictogramas por categoría</dt><dd>57</dd></div>
+            </dl>
+            <div class="product-buy">
+              <p class="picta-format-price">Bs <strong data-store-price>59</strong> <span>/ mes</span></p>
+              <p class="digital-order-access" data-digital-access>1 acceso digital</p>
+            </div>
+            <div class="product-add">
+              <p data-digital-total>Total de la compra <output data-product-total aria-live="polite">Bs 59,00</output></p>
+              <button class="btn btn-primary" type="submit" data-cart-link hidden>Agregar al carrito <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></button>
+              <a class="btn btn-primary" href="dashboard.html#tableros" data-digital-boards hidden>Ir a mis tableros <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+            </div>
+            <div class="product-cart-feedback">
+              <p data-cart-feedback role="status" aria-atomic="true"></p>
+              <a href="carrito.html" hidden>Ver carrito</a>
+            </div>
+            <div class="shop-order-feedback">
+              <p data-store-status role="status" tabindex="-1"></p>
+              <button class="btn btn-outline-primary" type="button" data-retry-catalog hidden disabled>Reintentar</button>
+              <noscript><p>Activa JavaScript para consultar la disponibilidad y continuar con el pedido.</p></noscript>
+            </div>
+            <p class="product-fulfillment"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span>Acceso inmediato en Mis tableros. Renovación manual.</span></p>
+          </div>
+
+          <section class="digital-preview" aria-labelledby="digital-preview-title">
+            <h3 id="digital-preview-title">Explora las páginas incluidas</h3>
+            <figure class="booklet-stage">
+              <ul class="booklet-pages booklet-thumbnails" role="list" aria-label="Páginas incluidas en Picta Esencial">
+                <li>
+                  <button type="button" aria-pressed="true" aria-controls="digital-gallery-image" data-image-alt="Rutina visual con fichas para la mañana, la tarde y la noche." title="Mi día">
+                    <img src="assets/productos/tableros/day.webp" width="1200" height="762" alt="" loading="lazy" decoding="async">
+                    <span class="visually-hidden">Mi día</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" aria-pressed="false" aria-controls="digital-gallery-image" data-image-alt="Tres frases para completar con una ficha: Quiero, Necesito y Me siento." title="Yo comunico">
+                    <img src="assets/productos/vistas/digital/phrases.webp" width="1200" height="846" alt="" loading="lazy" decoding="async">
+                    <span class="visually-hidden">Yo comunico</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" aria-pressed="false" aria-controls="digital-gallery-image" data-image-alt="Tres frases para completar con una ficha: No quiero, Me duele y Ayúdame." title="Puedo decir">
+                    <img src="assets/productos/vistas/digital/say.webp" width="1200" height="846" alt="" loading="lazy" decoding="async">
+                    <span class="visually-hidden">Puedo decir</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" aria-pressed="false" aria-controls="digital-gallery-image" data-image-alt="Seis fichas para comunicar molestias de ruido, olor, calor, frío, contacto y aglomeración." title="Algo me molesta">
+                    <img src="assets/productos/vistas/digital/sensory.webp" width="1200" height="569" alt="" loading="lazy" decoding="async">
+                    <span class="visually-hidden">Algo me molesta</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" aria-pressed="false" aria-controls="digital-gallery-image" data-image-alt="Pictogramas de personas conocidas y distintas emociones, agrupados en dos columnas." title="Personas y emociones">
+                    <img src="assets/productos/vistas/digital/people.webp" width="1200" height="839" alt="" loading="lazy" decoding="async">
+                    <span class="visually-hidden">Personas y emociones</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" aria-pressed="false" aria-controls="digital-gallery-image" data-image-alt="Casillas con ejemplos de fichas de higiene, descanso y cuidado personal." title="Cuidado">
+                    <img src="assets/productos/vistas/digital/care.webp" width="1200" height="839" alt="" loading="lazy" decoding="async">
+                    <span class="visually-hidden">Cuidado</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" aria-pressed="false" aria-controls="digital-gallery-image" data-image-alt="Fichas agrupadas en tres filas: Comunicar, Alimentos y Lugares." title="Comunicar, alimentos y lugares">
+                    <img src="assets/productos/vistas/digital/collection.webp" width="1200" height="1016" alt="" loading="lazy" decoding="async">
+                    <span class="visually-hidden">Comunicar, alimentos y lugares</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" aria-pressed="false" aria-controls="digital-gallery-image" data-image-alt="Fichas agrupadas en dos filas: Escuela y Juguetes y objetos." title="Escuela, juguetes y objetos">
+                    <img src="assets/productos/vistas/digital/school.webp" width="1200" height="743" alt="" loading="lazy" decoding="async">
+                    <span class="visually-hidden">Escuela, juguetes y objetos</span>
+                  </button>
+                </li>
+              </ul>
+              <div class="booklet-image-frame">
+                <img id="digital-gallery-image" src="assets/productos/tableros/day.webp" width="1200" height="762" alt="Rutina visual con fichas para la mañana, la tarde y la noche." loading="lazy" decoding="async">
+              </div>
+              <figcaption class="booklet-caption">
+                <p role="status"><strong>Mi día</strong><span>1 de 8</span></p>
+                <div class="booklet-controls" hidden>
+                  <button class="icon-button" type="button" data-booklet-step="-1" aria-label="Página anterior" aria-controls="digital-gallery-image"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></button>
+                  <button class="icon-button" type="button" data-booklet-step="1" aria-label="Página siguiente" aria-controls="digital-gallery-image"><svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></button>
+                </div>
+              </figcaption>
+            </figure>
+            <div class="digital-preview-action">
+              <p>Prueba cómo se arma una rutina corta en «Mi día».</p>
+              <a class="btn btn-outline-primary" href="#stickers">Probar el tablero <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+            </div>
+          </section>
+
+        </form>
       </div>
     </section>
 
     <section class="guide-section block" id="guia" aria-labelledby="guide-title">
       <div class="container-fluid picta-container">
-        <header class="section-heading split-heading">
-          <div>
-            <p class="section-label">Para familias</p>
-            <h2 class="section-title" id="guide-title">Picta en la vida diaria.</h2>
-          </div>
-          <p>Elige una situación y mira cómo usar los pictogramas con tu hijo o hija.</p>
-        </header>
+        <div class="guide-overview">
+          <header class="section-heading split-heading">
+            <div>
+              <h2 class="section-title" id="guide-title">Cómo usar Picta</h2>
+            </div>
+            <p>Usen las fichas para mostrar qué toca ahora, qué viene después o qué necesitan decir.</p>
+          </header>
 
-        <div class="segmented-controls guide-controls" id="guide-controls" role="group" aria-label="Elegir un ejemplo" hidden>
-          <button type="button" aria-pressed="true" aria-controls="ejemplo-hogar">Hogar</button>
-          <button type="button" aria-pressed="false" aria-controls="ejemplo-escuela">Escuela</button>
-          <button type="button" aria-pressed="false" aria-controls="ejemplo-salud">Salud</button>
-          <button type="button" aria-pressed="false" aria-controls="ejemplo-ciudad">Ciudad</button>
+          <ol class="guide-instructions" role="list" aria-label="Cómo armar una rutina">
+            <li>
+              <span aria-hidden="true">1</span>
+              <div><strong>Elijan las fichas</strong><p>Empiecen con dos o tres actividades conocidas.</p></div>
+            </li>
+            <li>
+              <span aria-hidden="true">2</span>
+              <div><strong>Ordénenlas en el tablero</strong><p>Pongan primero la ficha de lo que toca hacer ahora.</p></div>
+            </li>
+            <li>
+              <span aria-hidden="true">3</span>
+              <div><strong>Señalen qué sigue</strong><p>Al terminar, señalen juntos la siguiente ficha.</p></div>
+            </li>
+          </ol>
         </div>
-        <p class="visually-hidden" id="guide-status" role="status"></p>
 
-        <article class="guide-example tone-hogar" id="ejemplo-hogar" aria-labelledby="guide-hogar-title" tabindex="-1">
-          <div class="row g-4 align-items-center">
-            <div class="col-12 col-lg-4 guide-copy">
-              <h3 id="guide-hogar-title">Una mañana en casa</h3>
-              <p>Muestra las tarjetas al empezar el día. Señala la actividad de ahora y anticipa cuál viene después.</p>
-            </div>
-            <div class="col-12 col-lg-8">
-              <ol class="guide-steps list-unstyled mb-0" role="list">
-                <li class="guide-step">
-                  <div class="guide-art" aria-hidden="true">
-                    <span class="guide-number">1</span>
-                    <span class="pictogram-art" style="--pic-left: -6.15%; --pic-top: -11.48%">
-                      <img src="assets/pictogramas-picta.webp" alt="" decoding="async">
-                    </span>
-                  </div>
-                  <span class="guide-step-name">Despertar</span>
-                </li>
-                <li class="guide-step">
-                  <div class="guide-art" aria-hidden="true">
-                    <span class="guide-number">2</span>
-                    <span class="pictogram-art" style="--pic-left: -109.43%; --pic-top: -10.66%">
-                      <img src="assets/pictogramas-picta.webp" alt="" decoding="async">
-                    </span>
-                  </div>
-                  <span class="guide-step-name">Cepillarse</span>
-                </li>
-                <li class="guide-step">
-                  <div class="guide-art" aria-hidden="true">
-                    <span class="guide-number">3</span>
-                    <span class="pictogram-art" style="--pic-left: -208.20%; --pic-top: -13.52%">
-                      <img src="assets/pictogramas-picta.webp" alt="" decoding="async">
-                    </span>
-                  </div>
-                  <span class="guide-step-name">Desayunar</span>
-                </li>
-              </ol>
-            </div>
+        <div class="guide-workspace">
+          <h3 class="guide-examples-title" id="guide-examples-title">Elige una situación</h3>
+          <div class="collection-grid" id="colecciones" role="group" aria-labelledby="guide-examples-title">
+            <a class="collection-card collection-hogar" href="#ejemplo-hogar" aria-controls="ejemplo-hogar">
+              <span class="collection-art"><img src="assets/pictograms/34.webp" width="320" height="320" alt="" loading="lazy" decoding="async"></span>
+              <span>Hogar</span>
+            </a>
+            <a class="collection-card collection-escuela" href="#ejemplo-escuela" aria-controls="ejemplo-escuela">
+              <span class="collection-art"><img src="assets/pictograms/35.webp" width="320" height="320" alt="" loading="lazy" decoding="async"></span>
+              <span>Escuela</span>
+            </a>
+            <a class="collection-card collection-salud" href="#ejemplo-salud" aria-controls="ejemplo-salud">
+              <span class="collection-art"><img src="assets/pictograms/33.webp" width="320" height="320" alt="" loading="lazy" decoding="async"></span>
+              <span>Salud</span>
+            </a>
+            <a class="collection-card collection-ciudad" href="#ejemplo-ciudad" aria-controls="ejemplo-ciudad">
+              <span class="collection-art"><img src="assets/pictograms/32.webp" width="320" height="320" alt="" loading="lazy" decoding="async"></span>
+              <span>Ciudad</span>
+            </a>
           </div>
-        </article>
+          <p class="visually-hidden" id="guide-status" role="status"></p>
 
-        <article class="guide-example tone-escuela" id="ejemplo-escuela" aria-labelledby="guide-escuela-title" tabindex="-1">
-          <div class="row g-4 align-items-center">
-            <div class="col-12 col-lg-4 guide-copy">
-              <h3 id="guide-escuela-title">Una mañana en el colegio</h3>
-              <p>Coloca la secuencia a la vista al inicio de la clase. Si cambia el orden del día, muéstralo con las tarjetas.</p>
+          <article class="guide-example tone-hogar" id="ejemplo-hogar" aria-labelledby="guide-hogar-title" tabindex="-1">
+            <div class="row g-4 align-items-center">
+              <div class="col-12 col-lg-4 guide-copy">
+                <h3 id="guide-hogar-title">Una mañana en casa</h3>
+                <p>Coloquen estas fichas en «Mi día». Al terminar de cepillarse, señalen juntos la ficha de vestirse.</p>
+              </div>
+              <div class="col-12 col-lg-8">
+                <ol class="guide-steps list-unstyled mb-0" role="list">
+                  <li class="guide-step">
+                    <div class="guide-art" aria-hidden="true">
+                      <span class="guide-number">1</span>
+                      <img class="pictogram-art" src="assets/pictograms/45.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
+                    </div>
+                    <span class="guide-step-name">Cepillarse los dientes</span>
+                  </li>
+                  <li class="guide-step">
+                    <div class="guide-art" aria-hidden="true">
+                      <span class="guide-number">2</span>
+                      <img class="pictogram-art" src="assets/pictograms/40.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
+                    </div>
+                    <span class="guide-step-name">Vestirse</span>
+                  </li>
+                  <li class="guide-step">
+                    <div class="guide-art" aria-hidden="true">
+                      <span class="guide-number">3</span>
+                      <img class="pictogram-art" src="assets/pictograms/56.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
+                    </div>
+                    <span class="guide-step-name">Preparar la mochila</span>
+                  </li>
+                </ol>
+              </div>
             </div>
-            <div class="col-12 col-lg-8">
-              <ol class="guide-steps list-unstyled mb-0" role="list">
-                <li class="guide-step">
-                  <div class="guide-art" aria-hidden="true">
-                    <span class="guide-number">1</span>
-                    <span class="pictogram-art" style="--pic-left: -206.97%; --pic-top: -114.75%">
-                      <img src="assets/pictogramas-picta.webp" alt="" decoding="async">
-                    </span>
-                  </div>
-                  <span class="guide-step-name">Llegar al colegio</span>
-                </li>
-                <li class="guide-step">
-                  <div class="guide-art" aria-hidden="true">
-                    <span class="guide-number">2</span>
-                    <span class="pictogram-art" style="--pic-left: -311.48%; --pic-top: -118.44%">
-                      <img src="assets/pictogramas-picta.webp" alt="" decoding="async">
-                    </span>
-                  </div>
-                  <span class="guide-step-name">Leer</span>
-                </li>
-                <li class="guide-step">
-                  <div class="guide-art" aria-hidden="true">
-                    <span class="guide-number">3</span>
-                    <span class="pictogram-art" style="--pic-left: -8.61%; --pic-top: -218.85%">
-                      <img src="assets/pictogramas-picta.webp" alt="" decoding="async">
-                    </span>
-                  </div>
-                  <span class="guide-step-name">Salir al recreo</span>
-                </li>
-              </ol>
+          </article>
+
+          <article class="guide-example tone-escuela" id="ejemplo-escuela" aria-labelledby="guide-escuela-title" tabindex="-1">
+            <div class="row g-4 align-items-center">
+              <div class="col-12 col-lg-4 guide-copy">
+                <h3 id="guide-escuela-title">Prepararse para clases</h3>
+                <p>Antes de salir, revisen qué necesitan llevar. Luego señalen la escuela y conversen sobre qué harán en el recreo.</p>
+              </div>
+              <div class="col-12 col-lg-8">
+                <ol class="guide-steps list-unstyled mb-0" role="list">
+                  <li class="guide-step">
+                    <div class="guide-art" aria-hidden="true">
+                      <span class="guide-number">1</span>
+                      <img class="pictogram-art" src="assets/pictograms/56.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
+                    </div>
+                    <span class="guide-step-name">Preparar la mochila</span>
+                  </li>
+                  <li class="guide-step">
+                    <div class="guide-art" aria-hidden="true">
+                      <span class="guide-number">2</span>
+                      <img class="pictogram-art" src="assets/pictograms/35.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
+                    </div>
+                    <span class="guide-step-name">Llegar al colegio</span>
+                  </li>
+                  <li class="guide-step">
+                    <div class="guide-art" aria-hidden="true">
+                      <span class="guide-number">3</span>
+                      <img class="pictogram-art" src="assets/pictograms/59.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
+                    </div>
+                    <span class="guide-step-name">Salir al recreo</span>
+                  </li>
+                </ol>
+              </div>
             </div>
+          </article>
+
+          <article class="guide-example tone-salud" id="ejemplo-salud" aria-labelledby="guide-salud-title" tabindex="-1">
+            <div class="row g-4 align-items-center">
+              <div class="col-12 col-lg-4 guide-copy">
+                <h3 id="guide-salud-title">Comunicar una molestia</h3>
+                <p>Pon estas fichas al alcance. Tu hijo o hija puede señalar «Me duele» para contarte cómo se siente o «Pedir ayuda» si la necesita.</p>
+              </div>
+              <div class="col-12 col-lg-8">
+                <ul class="guide-steps list-unstyled mb-0" role="list">
+                  <li class="guide-step">
+                    <div class="guide-art" aria-hidden="true">
+                      <img class="pictogram-art" src="assets/pictograms/08.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
+                    </div>
+                    <span class="guide-step-name">Me duele</span>
+                  </li>
+                  <li class="guide-step">
+                    <div class="guide-art" aria-hidden="true">
+                      <img class="pictogram-art" src="assets/pictograms/69.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
+                    </div>
+                    <span class="guide-step-name">Pedir ayuda</span>
+                  </li>
+                  <li class="guide-step">
+                    <div class="guide-art" aria-hidden="true">
+                      <img class="pictogram-art" src="assets/pictograms/24.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
+                    </div>
+                    <span class="guide-step-name">Doctora</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          <article class="guide-example tone-ciudad" id="ejemplo-ciudad" aria-labelledby="guide-ciudad-title" tabindex="-1">
+            <div class="row g-4 align-items-center">
+              <div class="col-12 col-lg-4 guide-copy">
+                <h3 id="guide-ciudad-title">Una salida en familia</h3>
+                <p>Antes de salir, muestra el lugar que van a visitar y qué harán al terminar el paseo.</p>
+              </div>
+              <div class="col-12 col-lg-8">
+                <ol class="guide-steps list-unstyled mb-0" role="list">
+                  <li class="guide-step">
+                    <div class="guide-art" aria-hidden="true">
+                      <span class="guide-number">1</span>
+                      <img class="pictogram-art" src="assets/pictograms/41.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
+                    </div>
+                    <span class="guide-step-name">Salir de casa</span>
+                  </li>
+                  <li class="guide-step">
+                    <div class="guide-art" aria-hidden="true">
+                      <span class="guide-number">2</span>
+                      <img class="pictogram-art" src="assets/pictograms/36.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
+                    </div>
+                    <span class="guide-step-name">Ir al supermercado</span>
+                  </li>
+                  <li class="guide-step">
+                    <div class="guide-art" aria-hidden="true">
+                      <span class="guide-number">3</span>
+                      <img class="pictogram-art" src="assets/pictograms/34.webp" width="320" height="320" alt="" loading="lazy" decoding="async">
+                    </div>
+                    <span class="guide-step-name">Volver a casa</span>
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </article>
+
+          <div class="guide-actions">
+            <a class="btn btn-outline-primary" href="#stickers">Probar el tablero <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
           </div>
-        </article>
-
-        <article class="guide-example tone-salud" id="ejemplo-salud" aria-labelledby="guide-salud-title" tabindex="-1">
-          <div class="row g-4 align-items-center">
-            <div class="col-12 col-lg-4 guide-copy">
-              <h3 id="guide-salud-title">Una visita al centro de salud</h3>
-              <p>Muestra la secuencia antes de salir. En la sala de espera, vuelve a señalar el paso que está ocurriendo.</p>
-            </div>
-            <div class="col-12 col-lg-8">
-              <ol class="guide-steps list-unstyled mb-0" role="list">
-                <li class="guide-step">
-                  <div class="guide-art" aria-hidden="true">
-                    <span class="guide-number">1</span>
-                    <span class="pictogram-art" style="--pic-left: -311.07%; --pic-top: -221.31%">
-                      <img src="assets/pictogramas-picta.webp" alt="" decoding="async">
-                    </span>
-                  </div>
-                  <span class="guide-step-name">Esperar el turno</span>
-                </li>
-                <li class="guide-step">
-                  <div class="guide-art" aria-hidden="true">
-                    <span class="guide-number">2</span>
-                    <span class="pictogram-art" style="--pic-left: -209.02%; --pic-top: -218.44%">
-                      <img src="assets/pictogramas-picta.webp" alt="" decoding="async">
-                    </span>
-                  </div>
-                  <span class="guide-step-name">Entrar a consulta</span>
-                </li>
-                <li class="guide-step">
-                  <div class="guide-art" aria-hidden="true">
-                    <span class="guide-number">3</span>
-                    <span class="pictogram-art" style="--pic-left: -203.69%; --pic-top: -412.30%">
-                      <img src="assets/pictogramas-picta.webp" alt="" decoding="async">
-                    </span>
-                  </div>
-                  <span class="guide-step-name">Volver a casa</span>
-                </li>
-              </ol>
-            </div>
-          </div>
-        </article>
-
-        <article class="guide-example tone-ciudad" id="ejemplo-ciudad" aria-labelledby="guide-ciudad-title" tabindex="-1">
-          <div class="row g-4 align-items-center">
-            <div class="col-12 col-lg-4 guide-copy">
-              <h3 id="guide-ciudad-title">Una salida al parque</h3>
-              <p>Antes de salir, muestra cómo llegarán y qué harán al terminar el paseo.</p>
-            </div>
-            <div class="col-12 col-lg-8">
-              <ol class="guide-steps list-unstyled mb-0" role="list">
-                <li class="guide-step">
-                  <div class="guide-art" aria-hidden="true">
-                    <span class="guide-number">1</span>
-                    <span class="pictogram-art" style="--pic-left: -309.43%; --pic-top: -318.44%">
-                      <img src="assets/pictogramas-picta.webp" alt="" decoding="async">
-                    </span>
-                  </div>
-                  <span class="guide-step-name">Tomar el micro</span>
-                </li>
-                <li class="guide-step">
-                  <div class="guide-art" aria-hidden="true">
-                    <span class="guide-number">2</span>
-                    <span class="pictogram-art" style="--pic-left: -409.84%; --pic-top: -315.16%">
-                      <img src="assets/pictogramas-picta.webp" alt="" decoding="async">
-                    </span>
-                  </div>
-                  <span class="guide-step-name">Ir al parque</span>
-                </li>
-                <li class="guide-step">
-                  <div class="guide-art" aria-hidden="true">
-                    <span class="guide-number">3</span>
-                    <span class="pictogram-art" style="--pic-left: -203.69%; --pic-top: -412.30%">
-                      <img src="assets/pictogramas-picta.webp" alt="" decoding="async">
-                    </span>
-                  </div>
-                  <span class="guide-step-name">Volver a casa</span>
-                </li>
-              </ol>
-            </div>
-          </div>
-        </article>
-
-        <div class="guide-actions">
-          <a class="btn btn-primary" href="#stickers">Probar con stickers <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
         </div>
       </div>
     </section>
 
-<section class="picta-formats" id="formatos" aria-labelledby="formatos-title">
-  <div class="container-fluid picta-container">
-    <div class="picta-formats-heading">
-      <p class="section-label">Formatos</p>
-      <h2 class="section-title" id="formatos-title">Elige cómo usar PICTA.</h2>
-      <p>Material para imprimir en casa, recursos a medida o un kit físico listo para usar.</p>
-    </div>
-    <div class="row row-cols-1 row-cols-md-3 g-3">
-      <div class="col">
-        <article class="picta-format h-100">
-          <span class="picta-format-icon picta-format-icon-digital">
-            <svg class="icon" aria-hidden="true"><use href="#i-file"/></svg>
-          </span>
-          <p class="picta-format-kind">Pack digital</p>
-          <h3>Biblioteca esencial</h3>
-          <p class="picta-format-price">Bs <strong>39</strong></p>
-          <ul class="picta-format-list">
-            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>40–60 recursos visuales</li>
-            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Archivos PDF e imprimibles</li>
-            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Tarjetas por categorías</li>
-          </ul>
-          <a class="btn btn-outline-primary" href="#personalizacion" data-request-format="digital">
-            Elegir pack digital
-            <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
-          </a>
-        </article>
+    <section class="board-trial block" id="stickers" aria-labelledby="stickers-title">
+      <div class="container-fluid picta-container">
+        <header class="section-heading board-trial-heading">
+          <h2 class="section-title" id="stickers-title">Prueba Picta Esencial</h2>
+          <p>Cepillarse es lo primero. Elige qué sigue y marca la rutina como lista.</p>
+        </header>
+        <div class="essentials-window">
+          <div class="essentials-board">
+            <h3 class="essentials-board-title">Mi día</h3>
+            <div class="essentials-row board-trial-row">
+              <span class="essentials-period"><img src="assets/pictograms/01.webp" width="320" height="320" alt="" loading="lazy">Mañana</span>
+              <span class="essentials-tile"><img src="assets/pictograms/45.webp" width="320" height="320" alt="" loading="lazy"><span>Cepillarme</span></span>
+              <button class="essentials-slot board-trial-slot" type="button" aria-label="Agregar ficha 2" aria-expanded="false" aria-controls="board-trial-choices" disabled>
+                <svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>
+                <span>Agregar ficha</span>
+              </button>
+              <button class="essentials-slot board-trial-slot" type="button" aria-label="Agregar ficha 3" aria-expanded="false" aria-controls="board-trial-choices" disabled>
+                <svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>
+                <span>Agregar ficha</span>
+              </button>
+            </div>
+            <div class="board-trial-picker" id="board-trial-choices" role="group" aria-labelledby="board-trial-choices-title" hidden>
+              <h4 id="board-trial-choices-title">¿Qué sigue?</h4>
+              <div class="board-trial-options">
+                <button type="button" class="essentials-tile"><img src="assets/pictograms/40.webp" width="320" height="320" alt="" loading="lazy"><span>Vestirme</span></button>
+                <button type="button" class="essentials-tile"><img src="assets/pictograms/56.webp" width="320" height="320" alt="" loading="lazy"><span>Preparar mi mochila</span></button>
+                <button type="button" class="essentials-tile"><img src="assets/pictograms/35.webp" width="320" height="320" alt="" loading="lazy"><span>Ir a la escuela</span></button>
+              </div>
+            </div>
+            <div class="board-trial-progress" hidden>
+              <p id="board-trial-status" role="status">2 fichas por agregar</p>
+              <button class="btn board-trial-done" type="button" aria-pressed="false" disabled>
+                <svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Listo
+              </button>
+            </div>
+            <noscript><p class="noscript-note">Activa JavaScript para colocar las fichas.</p></noscript>
+          </div>
+        </div>
+        <div class="board-trial-footer">
+          <a class="btn btn-outline-primary" href="#acceso-digital">Ver Picta Esencial <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+        </div>
       </div>
-
-      <div class="col">
-        <article class="picta-format picta-format-custom h-100">
-          <span class="picta-format-icon picta-format-icon-custom">
-            <svg class="icon" aria-hidden="true"><use href="#i-sparkles"/></svg>
-          </span>
-          <p class="picta-format-kind">Pack personalizado</p>
-          <h3>Hecho para tu rutina</h3>
-          <p class="picta-format-price">Bs <strong>120</strong></p>
-          <ul class="picta-format-list">
-            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Personas y lugares cotidianos</li>
-            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Actividades y recorridos a medida</li>
-            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Archivo digital listo para imprimir</li>
-          </ul>
-          <a class="btn btn-primary" href="#personalizacion" data-request-format="personalizado">
-            Elegir pack personalizado
-            <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
-          </a>
-        </article>
-      </div>
-
-      <div class="col">
-        <article class="picta-format h-100">
-          <span class="picta-format-icon picta-format-icon-physical">
-            <svg class="icon" aria-hidden="true"><use href="#i-box"/></svg>
-          </span>
-          <p class="picta-format-kind">Kit físico</p>
-          <h3>Listo para usar</h3>
-          <p class="picta-format-price">Bs <strong>250</strong></p>
-          <ul class="picta-format-list">
-            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Material personalizado</li>
-            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Tarjetas impresas y laminadas</li>
-            <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Producción bajo pedido</li>
-          </ul>
-          <a class="btn btn-outline-primary" href="#personalizacion" data-request-format="fisico">
-            Elegir kit físico
-            <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
-          </a>
-        </article>
-      </div>
-    </div>
-    <p class="picta-format-note">Precios piloto orientativos en bolivianos.</p>
-  </div>
-</section>
+    </section>
 
 <section class="picta-personalization" id="personalizacion" aria-labelledby="personalizacion-title">
   <div class="container-fluid picta-container">
     <div class="picta-request-panel">
       <div class="picta-request-intro">
-        <p class="section-label">Personalización</p>
-        <h2 class="section-title" id="personalizacion-title">Tu rutina.<br> Tus lugares.<br> Tus personas.</h2>
-        <p>Prepara un resumen de la situación que quieres representar y consérvalo para conversar sobre tu propuesta.</p>
-        <div class="picta-request-art" aria-hidden="true">
-          <span><svg class="icon"><use href="#i-file"/></svg></span>
-          <span><svg class="icon"><use href="#i-sparkles"/></svg></span>
-          <span><svg class="icon"><use href="#i-check"/></svg></span>
-        </div>
+        <p class="section-label" data-request-section-label>Personalización · Picta Físico</p>
+        <h2 class="section-title" id="personalizacion-title">Personaliza tu cuadernillo</h2>
+        <p data-request-intro>Elige fichas con velcro blanco para Mi diario visual. Cuéntanos qué actividades, personas o lugares quieres representar y sigue el diseño desde Mis encargos.</p>
+        <figure class="picta-request-example">
+          <figcaption>
+            <span>Ejemplo de rutina</span>
+            <strong>Prepararse para la escuela</strong>
+          </figcaption>
+          <ol class="picta-request-steps" role="list">
+            <li><span class="picta-motion guide-motion-icon" data-lottie="assets/motion/rutina-ropa.json" data-motion-autoplay data-motion-replay aria-hidden="true"><img class="picta-motion-static" src="assets/pictograms/40.webp" width="320" height="320" alt="" loading="lazy" decoding="async"><span class="picta-motion-layer"></span></span><span>Vestirme</span></li>
+            <li><span class="picta-motion guide-motion-icon" data-lottie="assets/motion/rutina-mochila.json" data-motion-autoplay data-motion-replay aria-hidden="true"><img class="picta-motion-static" src="assets/pictograms/56.webp" width="320" height="320" alt="" loading="lazy" decoding="async"><span class="picta-motion-layer"></span></span><span>Preparar mi mochila</span></li>
+            <li><span class="picta-motion guide-motion-icon" data-lottie="assets/motion/rutina-escuela.json" data-motion-autoplay data-motion-replay aria-hidden="true"><img class="picta-motion-static" src="assets/pictograms/35.webp" width="320" height="320" alt="" loading="lazy" decoding="async"><span class="picta-motion-layer"></span></span><span>Ir a la escuela</span></li>
+          </ol>
+        </figure>
       </div>
 
       <div class="picta-request-workspace">
         <form id="picta-request-form" class="picta-request-form" autocomplete="off" novalidate>
-          <h3>Prepara tu solicitud</h3>
+          <h3 data-request-form-title>Elige tus fichas físicas</h3>
           <div class="row gx-3">
-            <div class="col-12 col-sm-6 picta-field">
-              <label class="form-label" for="request-format">Formato</label>
-              <select class="form-select" id="request-format" name="formato" required aria-describedby="request-format-error">
-                <option value="">Elige un formato</option>
-                <option value="digital">Pack digital</option>
-                <option value="personalizado">Pack personalizado</option>
-                <option value="fisico">Kit físico</option>
+            <div class="col-12 col-sm-6 picta-field" id="request-package-field">
+              <label class="form-label" for="request-package">Paquete de fichas</label>
+              <select class="form-select" id="request-package" name="paquete_pictogramas" required aria-describedby="request-package-error">
+                <option value="">Elige un paquete</option>
               </select>
-              <p class="picta-field-error" id="request-format-error" hidden>Elige el formato que te interesa.</p>
+              <p class="picta-field-error" id="request-package-error" hidden>Elige un paquete de fichas físicas.</p>
             </div>
-            <div class="col-12 col-sm-6 picta-field">
+            <div class="col-12 col-sm-6 picta-field" id="request-context-field">
               <label class="form-label" for="request-context">Entorno de uso</label>
               <select class="form-select" id="request-context" name="entorno" required aria-describedby="request-context-error">
                 <option value="">Elige un entorno</option>
                 <option value="hogar">Hogar</option>
                 <option value="escuela">Escuela</option>
-                <option value="salud">Consulta o centro de apoyo</option>
+                <option value="salud">Salud</option>
+                <option value="ciudad">Ciudad</option>
                 <option value="otro">Otro entorno</option>
               </select>
               <p class="picta-field-error" id="request-context-error" hidden>Elige dónde usarías el material.</p>
             </div>
           </div>
           <div class="picta-field">
-            <label class="form-label" for="request-description">¿Qué quieres representar?</label>
-            <textarea class="form-control" id="request-description" name="descripcion" rows="4" maxlength="600" required
+            <label class="form-label" for="request-description" data-request-description-label>¿Qué quieres representar?</label>
+            <textarea class="form-control" style="resize: none" id="request-description" name="descripcion" rows="4" maxlength="600" required
               aria-describedby="request-description-hint request-description-error"
               placeholder="Por ejemplo, una rutina para preparar la mochila y salir al colegio."></textarea>
-            <p class="picta-field-hint" id="request-description-hint">Describe actividades y lugares en términos generales. Omite nombres y datos clínicos.</p>
+            <p class="picta-field-hint" id="request-description-hint">Describe la situación en términos generales. Omite nombres de menores, diagnósticos, informes médicos y fotografías.</p>
             <p class="picta-field-error" id="request-description-error" hidden>Describe la situación que necesitas representar.</p>
           </div>
-          <button class="btn btn-primary" type="submit" id="request-prepare" disabled>
-            Preparar resumen
-            <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
-          </button>
-          <p class="picta-request-note">El resumen se genera en este navegador.</p><noscript><p class="picta-request-note">Activa JavaScript para preparar tu resumen.</p></noscript>
+          <div class="picta-field">
+            <label><input type="checkbox" id="request-consent" required aria-describedby="request-consent-error">
+              Autorizo a Picta a usar el correo de mi cuenta para gestionar esta solicitud.</label>
+            <p class="picta-field-error" id="request-consent-error" hidden>Marca la autorización para continuar.</p>
+          </div>
+          <button class="btn btn-primary" type="submit" id="request-prepare">Agregar al carrito</button>
+          <p class="picta-request-note">La compra se confirma desde tu cuenta.</p>
+          <p id="request-feedback" role="status"></p>
         </form>
-        <section class="picta-request-result" id="picta-request-result" aria-labelledby="request-result-title" hidden>
-          <h3 id="request-result-title" tabindex="-1">
-            <svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>
-            Tu resumen está listo
-          </h3>
-          <dl>
-            <div><dt>Formato</dt><dd id="request-result-format"></dd></div>
-            <div><dt>Entorno</dt><dd id="request-result-context"></dd></div>
-            <div><dt>Lo que quieres representar</dt><dd id="request-result-description"></dd></div>
-          </dl>
-          <button class="btn btn-outline-primary" id="request-download" type="button">
-            Descargar resumen
-            <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>
-          </button>
-        </section>
+        <p><a id="request-history" href="dashboard.html#solicitudes" hidden>Ver mis solicitudes</a></p>
       </div>
     </div>
   </div>
@@ -510,20 +677,32 @@
     </div>
     <div class="picta-faq-list">
       <details>
-        <summary>¿A quién están dirigidos los recursos?<svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+        <summary>¿A quién están dirigidos los recursos?<svg class="icon icon-faq" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></summary>
         <p>Picta está pensado para niñas y niños que usan apoyos visuales para comunicarse o saber qué viene después, y para las familias que los acompañan. Las tarjetas pueden complementar las estrategias que acuerden con los profesionales que los acompañan.</p>
       </details>
       <details>
-        <summary>¿Qué puedo probar en esta versión?<svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></summary>
-        <p>Pueden explorar los stickers juntos. En la guía para familias hay ejemplos para casa, el colegio y otros lugares.</p>
+        <summary>¿Qué puedo probar en esta versión?<svg class="icon icon-faq" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></summary>
+        <p>Puedes armar una rutina corta en «Mi día» sin crear una cuenta. El acceso digital incluye el cuadernillo completo.</p>
       </details>
       <details>
-        <summary>¿Qué incluye cada formato?<svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></summary>
-        <p>El pack digital reúne recursos imprimibles. El pack personalizado adapta las tarjetas y secuencias a tu entorno. El kit físico contempla impresión y laminado.</p>
+        <summary>¿Qué incluye cada formato?<svg class="icon icon-faq" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></summary>
+        <p>Picta Esencial incluye 4 tableros de uso, 4 páginas de fichas y 57 pictogramas en el navegador. Mi diario visual incluye el cuadernillo y sus fichas con velcro blanco. Mi diario visual ofrece paquetes adicionales de 10, 25 o 50 pictogramas personalizados.</p>
       </details>
       <details>
-        <summary>¿Cómo se incorpora el contexto boliviano?<svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+        <summary>¿Cómo se incorpora el contexto boliviano?<svg class="icon icon-faq" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></summary>
         <p>PICTA parte de situaciones reconocibles en Bolivia y puede incluir vocabulario, alimentos, espacios y actividades del entorno de cada familia.</p>
+      </details>
+      <details>
+        <summary>¿Cómo se paga un pedido?<svg class="icon icon-faq" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></summary>
+        <p>Agrega tus productos al carrito, inicia sesión y completa el formulario de pago. Puedes usar datos ficticios. Picta Esencial se activa al instante en Mis tableros. Para productos físicos, puedes elegir envío o recojo y seguir el pedido desde tu cuenta. La demostración no hace cargos ni envíos reales.</p>
+      </details>
+      <details>
+        <summary>¿Qué opciones de entrega tiene el cuadernillo?<svg class="icon icon-faq" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></summary>
+        <p>Puedes elegir entre recojo sin costo y envío por <span data-store-shipping>Bs 25</span> por pedido. Verás el total antes de registrar el pedido.</p>
+      </details>
+      <details>
+        <summary>¿Qué ocurre si vence mi acceso?<svg class="icon icon-faq" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></summary>
+        <p>La demo sigue disponible. Tus rutinas guardadas se conservan y puedes recuperarlas al renovar el acceso manualmente.</p>
       </details>
     </div>
   </div>
@@ -531,36 +710,13 @@
 
   </main>
 
-  <footer class="site-footer" id="contacto">
-    <div class="container-fluid picta-container footer-wrap">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <a href="#inicio" class="wordmark" aria-label="PICTA, inicio">
-            <svg viewBox="0 0 522 133" aria-hidden="true" focusable="false"><use href="#picta-wordmark"/></svg>
-          </a>
-          <p>Recursos visuales para la vida cotidiana.</p>
-        </div>
-        <nav class="footer-links" aria-label="Más sobre PICTA">
-          <a href="#stickers">Stickers</a>
-          <a href="#colecciones">Colecciones</a>
-          <a href="#guia">Para familias</a>
-          <a href="#formatos">Formatos</a>
-          <a href="#preguntas">Preguntas frecuentes</a>
-        </nav>
-      </div>
-      <div class="footer-bottom">
-        <span>© 2026 PICTA · Demostración</span>
-        <span>Santa Cruz de la Sierra, Bolivia</span>
-      </div>
-    </div>
-  </footer>
+  <footer class="site-footer" id="contacto" data-picta-footer></footer>
 
-  <dialog class="account-dialog" id="account-dialog" aria-labelledby="account-title" aria-describedby="account-description"
-    data-supabase-url="https://ufhncvurcloacpkqocbq.supabase.co" data-supabase-key="sb_publishable_YsFHQiZPI9UETrt8BNJtkg_fv45e91u">
+  <dialog class="account-dialog" id="account-dialog" aria-labelledby="account-title" aria-describedby="account-description">
     <div class="account-layout">
       <div class="account-art" aria-hidden="true">
-        <svg viewBox="0 0 522 133"><use href="#picta-wordmark"/></svg>
-        <img src="assets/kit-picta.webp" alt="" width="1448" height="1086" loading="lazy">
+        <img class="account-brand-wordmark" src="assets/picta-wordmark.webp" alt="" width="640" height="157">
+        <img src="assets/cuadernillo/01.webp" alt="" width="1100" height="859" loading="lazy">
         <p>Cada día,<br>más claro.</p>
       </div>
       <div class="account-panel">
@@ -592,33 +748,22 @@
             <p class="account-field-error" id="account-password-error" hidden>Escribe tu contraseña.</p>
           </div>
           <button class="account-text-button account-forgot" type="button" data-account-mode="recover" hidden>¿Olvidaste tu contraseña?</button>
+          <div data-account-field hidden>
+            <label><input type="checkbox" id="account-adult" required disabled aria-describedby="account-adult-error"> Confirmo que soy mayor de edad.</label>
+            <p id="account-adult-error" class="account-field-error" hidden>Confirma que eres mayor de edad.</p>
+          </div>
           <button class="btn btn-primary account-submit" id="account-submit" type="submit">
             <span>Iniciar sesión</span>
             <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
           </button>
         </form>
 
-        <form id="account-profile" class="account-form" novalidate hidden>
-          <dl class="account-field">
-            <dt class="account-field-label">Correo electrónico</dt>
-            <dd id="profile-email" class="account-email"></dd>
-          </dl>
-          <div class="account-field">
-            <label for="profile-name">Nombre</label>
-            <input class="form-control" id="profile-name" name="nombre" type="text" autocomplete="name" maxlength="100" required aria-describedby="profile-name-error">
-            <p class="account-field-error" id="profile-name-error" hidden>Escribe tu nombre.</p>
-          </div>
-          <button class="btn btn-primary account-submit" id="account-save" type="submit">
-            <span>Guardar nombre</span>
-            <svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>
-          </button>
-        </form>
         <p class="account-status" id="account-status" role="status" aria-atomic="true"></p>
         <div class="account-links" id="account-links" hidden>
           <p id="account-switch-copy" hidden></p>
           <button class="account-text-button" id="account-switch" type="button" hidden></button>
           <button class="account-text-button" id="account-resend" type="button" data-account-mode="resend" hidden>Reenviar confirmación</button>
-          <button class="account-text-button" id="account-retry" type="button" hidden>Volver a cargar el perfil</button>
+          <a class="account-text-button" id="account-back-profile" href="dashboard.html#perfil" hidden>Volver a mi perfil</a>
           <button class="account-text-button" id="account-logout" type="button" hidden>Cerrar sesión</button>
         </div>
       </div>

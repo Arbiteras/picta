@@ -1,0 +1,73 @@
+/* Lucide icon motion adapted from Animate UI. See assets/vendor/animate-ui/LICENSE.md. */
+
+.icon-menu path,
+.icon-faq path {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.menu-toggle[aria-expanded="true"] .icon-menu path:first-child {
+  transform: translateY(6px) rotate(-45deg);
+}
+
+.menu-toggle[aria-expanded="true"] .icon-menu path:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-toggle[aria-expanded="true"] .icon-menu path:last-child {
+  transform: translateY(-6px) rotate(45deg);
+}
+
+details[open] > summary .icon-faq path:last-child {
+  opacity: 0;
+  transform: scaleY(.2);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .icon-menu path,
+  .icon-faq path {
+    transition: transform 300ms ease-in-out, opacity 200ms ease-in-out;
+  }
+
+  .icon use[href="#i-arrow-right"],
+  .icon use[href="#dash-arrow"],
+  .icon-download g {
+    transform-box: fill-box;
+    transition: transform 300ms ease-in-out;
+  }
+
+  :is(a, button:enabled):is(:focus-visible, :active) .icon use:is([href="#i-arrow-right"], [href="#dash-arrow"]) {
+    transform: translateX(25%);
+  }
+
+  button:enabled:is(:focus-visible, :active) .icon-download g {
+    transform: translateY(2px);
+  }
+
+  .icon use[href="#i-check"] {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .picta-request-result:not([hidden]) h3 use[href="#i-check"],
+  .sticker-done[aria-pressed="true"] use[href="#i-check"] {
+    animation: picta-icon-check 600ms ease-in-out;
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  :is(a, button:enabled):hover .icon use:is([href="#i-arrow-right"], [href="#dash-arrow"]) {
+    transform: translateX(25%);
+  }
+
+  button:enabled:hover .icon-download g {
+    transform: translateY(2px);
+  }
+
+}
+
+@keyframes picta-icon-check {
+  0% { stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { stroke-dasharray: 1; stroke-dashoffset: 0; opacity: 1; transform: scale(1); }
+}

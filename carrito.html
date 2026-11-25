@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es-BO">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#dff6fa">
+  <title>Carrito · Picta</title>
+  <link rel="icon" href="assets/picta-symbol.png">
+  <link rel="stylesheet" href="assets/vendor/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="styles.css?v=10">
+  <link rel="stylesheet" href="carrito.css?v=2">
+  <script src="assets/vendor/supabase/supabase-2.119.0.js" defer></script>
+  <script src="picta-supabase.js" defer></script>
+  <script src="navigation.js?v=4" defer></script>
+  <script src="tienda.js" defer></script>
+  <script src="carrito.js?v=3" defer></script>
+</head>
+<body class="picta-store picta-flow">
+  <header class="site-header" data-picta-header="cart"></header>
+  <script src="site-shell.js?v=4"></script>
+  <main class="container-fluid picta-container purchase-main" data-step="cart">
+    <header class="purchase-heading">
+      <div>
+        <h1 class="section-title" id="purchase-title" tabindex="-1">Tu carrito</h1>
+        <p id="purchase-lead">Revisa tus productos y elige cómo recibirlos.</p>
+      </div>
+      <div class="purchase-art picta-flow-art" aria-hidden="true">
+        <img src="assets/pictograms/34.webp" alt="" width="72" height="72">
+        <img src="assets/pictograms/56.webp" alt="" width="72" height="72">
+        <img src="assets/pictograms/58.webp" alt="" width="72" height="72">
+      </div>
+    </header>
+    <p id="cart-status" class="purchase-status" role="status">Cargando productos…</p>
+    <section id="cart-empty" class="purchase-card purchase-empty" hidden>
+      <h2>Tu carrito está vacío</h2>
+      <a class="btn btn-primary" href="index.html#formatos">Ver productos</a>
+    </section>
+    <form id="cart-checkout" class="purchase-grid" hidden>
+      <section class="purchase-card" aria-labelledby="cart-items-title">
+        <h2 id="cart-items-title">Productos</h2>
+        <ul id="cart-items" class="purchase-items"></ul>
+      </section>
+      <section class="purchase-card" aria-labelledby="cart-total-title">
+        <h2 id="cart-total-title">Resumen</h2>
+        <fieldset id="cart-delivery-field" hidden>
+          <legend>Entrega</legend>
+          <label><input type="radio" name="entrega" value="recojo" checked> Recojo sin costo</label>
+          <label><input type="radio" name="entrega" value="envio"> Envío · Bs 25 por pedido</label>
+          <label id="cart-address-field" hidden for="cart-address">Ciudad y dirección de entrega</label>
+          <textarea class="form-control" id="cart-address" minlength="8" maxlength="300" rows="2" hidden disabled></textarea>
+        </fieldset>
+        <dl class="purchase-breakdown">
+          <div><dt>Subtotal</dt><dd id="cart-subtotal"></dd></div>
+          <div id="cart-shipping-line" hidden><dt>Envío</dt><dd id="cart-shipping"></dd></div>
+          <div><dt>Total</dt><dd id="cart-total"></dd></div>
+        </dl>
+        <p class="purchase-note">Los productos digitales se activan al confirmar el pago.</p>
+        <button class="btn btn-primary" id="cart-submit" type="submit">Continuar al pago</button>
+        <a class="btn btn-primary" id="cart-login" href="index.html?cuenta=carrito" hidden>Iniciar sesión para continuar</a>
+      </section>
+    </form>
+    <section class="purchase-grid purchase-payment" id="cart-payment" aria-label="Pago y confirmación" hidden>
+      <div class="purchase-card purchase-payment-main">
+        <p id="cart-payment-status" class="purchase-message" role="status"></p>
+        <form id="cart-card-form" autocomplete="off" novalidate aria-labelledby="cart-card-title" aria-describedby="card-demo-note" hidden>
+          <div class="purchase-card-heading">
+            <h2 id="cart-card-title">Pago con tarjeta</h2>
+            <p>Crédito o débito</p>
+          </div>
+          <p class="purchase-payment-note" id="card-demo-note"><strong>Pago en sandbox</strong> Usa únicamente datos ficticios. Este entorno no genera cargos y los datos de la tarjeta se quedan en tu navegador.</p>
+          <fieldset id="cart-card-fields">
+            <div class="purchase-field">
+              <label for="card-holder">Titular de la tarjeta</label>
+              <input class="form-control" id="card-holder" required maxlength="80" placeholder="Nombre y apellido" aria-describedby="card-holder-error">
+              <p class="purchase-field-error" id="card-holder-error" hidden></p>
+            </div>
+            <div class="purchase-field">
+              <label for="card-number">Número de tarjeta</label>
+              <input class="form-control" id="card-number" required inputmode="numeric" maxlength="23" aria-describedby="card-number-error">
+              <p class="purchase-field-error" id="card-number-error" hidden></p>
+            </div>
+            <div class="purchase-card-pair">
+              <div class="purchase-field">
+                <label for="card-expiry">Vencimiento</label>
+                <input class="form-control" id="card-expiry" required inputmode="numeric" maxlength="5" placeholder="MM/AA" aria-describedby="card-expiry-error">
+                <p class="purchase-field-error" id="card-expiry-error" hidden></p>
+              </div>
+              <div class="purchase-field">
+                <label for="card-cvc">CVC / CVV</label>
+                <input class="form-control" id="card-cvc" type="password" required inputmode="numeric" maxlength="4" placeholder="3 o 4 dígitos" aria-describedby="card-cvc-error">
+                <p class="purchase-field-error" id="card-cvc-error" hidden></p>
+              </div>
+            </div>
+            <button class="btn btn-primary purchase-pay" id="cart-pay" type="submit">Pagar</button>
+          </fieldset>
+        </form>
+        <ul class="purchase-fulfillment" id="cart-fulfillment" hidden></ul>
+        <div class="purchase-actions">
+          <a class="btn btn-primary" id="cart-payment-login" hidden>Iniciar sesión</a>
+          <a class="btn btn-primary" id="cart-open-boards" href="dashboard.html#tableros" hidden>Abrir mis tableros</a>
+          <a class="btn btn-primary" id="cart-view-orders" href="dashboard.html#pedidos" hidden>Ver mis pedidos</a>
+          <a class="btn btn-outline-primary" id="cart-view-requests" href="dashboard.html#solicitudes" hidden>Ver personalización</a>
+          <button class="btn btn-outline-primary" id="cart-check-payment" type="button" hidden>Consultar estado</button>
+          <button class="btn btn-outline-primary" id="cart-try-again" type="button" hidden>Volver al carrito</button>
+        </div>
+      </div>
+      <aside class="purchase-card purchase-summary" id="cart-payment-summary" aria-labelledby="cart-payment-summary-title" hidden>
+        <h2 id="cart-payment-summary-title">Resumen de tu compra</h2>
+        <ul id="cart-payment-lines" class="purchase-items"></ul>
+        <p id="cart-payment-delivery" class="purchase-note" hidden></p>
+        <dl class="purchase-breakdown">
+          <div id="cart-payment-shipping" hidden><dt>Envío</dt><dd></dd></div>
+          <div><dt>Total</dt><dd id="cart-payment-total"></dd></div>
+        </dl>
+      </aside>
+    </section>
+    <section class="purchase-card purchase-history" id="cart-history" aria-labelledby="cart-history-title" hidden>
+      <h2 id="cart-history-title">Mis compras</h2>
+      <ul id="cart-history-items" class="purchase-items"></ul>
+    </section>
+  </main>
+  <footer class="site-footer" id="contacto" data-picta-footer></footer>
+</body>
+</html>

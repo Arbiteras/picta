@@ -1,0 +1,4 @@
+/node_modules/
+/dist/
+/public/canvaskit.wasm
+*.tsbuildinfo

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es-BO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#dff6fa">
+  <title>Mi espacio Picta</title>
+  <link rel="icon" type="image/png" href="assets/picta-symbol.png">
+  <link rel="stylesheet" href="assets/vendor/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="styles.css?v=10">
+  <link rel="stylesheet" href="dashboard.css?v=3">
+  <link rel="stylesheet" href="stickers.css">
+  <link rel="stylesheet" href="icon-motion.css">
+  <script src="picta-motion.js?v=3" defer></script>
+  <script src="assets/vendor/supabase/supabase-2.119.0.js" defer></script>
+  <script src="picta-supabase.js" defer></script>
+  <script src="navigation.js?v=4" defer></script>
+  <script src="tienda.js" defer></script>
+  <script src="stickers.js" defer></script>
+  <script src="dashboard.js?v=5" defer></script>
+</head>
+<body class="dashboard-body picta-flow">
+  <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></symbol>
+    <symbol id="dash-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+    <symbol id="dash-bag" viewBox="0 0 24 24"><path d="M5 8h14l1 12H4L5 8Zm4 2V7a3 3 0 0 1 6 0v3"/></symbol>
+    <symbol id="dash-box" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5ZM3 8v8l9 5 9-5V8m-9 5v8"/></symbol>
+    <symbol id="dash-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="dash-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m8.5 12 2.3 2.3 4.8-5"/></symbol>
+    <symbol id="dash-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></symbol>
+    <symbol id="dash-refresh" viewBox="0 0 24 24"><path d="M20 10a8 8 0 1 0-1.9 7M20 5v5h-5"/></symbol>
+    <symbol id="dash-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="dash-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-9Z"/><path d="M9 21v-7h6v7"/></symbol>
+    <symbol id="dash-book" viewBox="0 0 24 24"><path d="M12 6v15m0-15C9 4 6 4 3 5v14c3-1 6-1 9 2 3-3 6-3 9-2V5c-3-1-6-1-9 1Z"/></symbol>
+    <symbol id="dash-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/></symbol>
+    <symbol id="dash-exit" viewBox="0 0 24 24"><path d="M11 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6m4 13 5-5-5-5m5 5H9"/></symbol>
+  </svg>
+
+  <a class="skip-link" href="#contenido-panel">Saltar al contenido</a>
+  <header class="site-header dash-header" data-picta-header="account">
+    <nav id="dash-account-nav" class="dash-account-nav picta-container container-fluid" aria-label="Área personal de Picta" hidden>
+      <button id="dash-account-toggle" class="dash-account-toggle" type="button" aria-expanded="false" aria-controls="dash-account-links">
+        <span>Mi cuenta</span>
+        <strong>Resumen</strong>
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <div class="dash-nav-scroll" id="dash-account-links">
+        <div class="dash-tabs">
+          <a href="#inicio" data-dash-section="inicio"><svg class="icon" aria-hidden="true"><use href="#dash-home"/></svg> Resumen</a>
+          <a href="#pedidos" data-dash-section="pedidos"><svg class="icon" aria-hidden="true"><use href="#dash-box"/></svg> Mis pedidos</a>
+          <a href="#solicitudes" data-dash-section="solicitudes"><svg class="icon" aria-hidden="true"><use href="#dash-book"/></svg> Mis encargos</a>
+          <a href="#tableros" data-dash-section="tableros"><svg class="icon" aria-hidden="true"><use href="#dash-check"/></svg> Mis tableros</a>
+          <a href="#perfil" data-dash-section="perfil"><svg class="icon" aria-hidden="true"><use href="#dash-person"/></svg> Datos de perfil</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <script src="site-shell.js?v=4"></script>
+
+  <main id="contenido-panel" class="dash-main" tabindex="-1">
+    <section id="dash-gate" class="dash-gate" aria-labelledby="dash-gate-title">
+      <div class="dash-gate-copy">
+        <h1 id="dash-gate-title" tabindex="-1">Mi espacio Picta</h1>
+        <p id="dash-gate-message" role="status">Estamos comprobando tu sesión.</p>
+        <a id="dash-login" class="btn btn-primary" href="index.html?cuenta=inicio" hidden>Iniciar sesión <svg class="icon" aria-hidden="true"><use href="#dash-arrow"/></svg></a>
+        <button id="dash-session-retry" class="btn btn-outline-primary" type="button" hidden>Reintentar</button>
+        <noscript><p>Activa JavaScript para acceder a tu cuenta.</p></noscript>
+      </div>
+      <div class="dash-gate-art">
+        <img src="assets/cuadernillo/01.webp" width="1100" height="859" alt="Lámina Mi día del cuadernillo Picta">
+      </div>
+    </section>
+
+    <div id="dash-shell" class="dash-shell" hidden>
+
+      <div class="dash-workspace">
+        <div class="dash-notice" id="dash-feedback" role="status" aria-atomic="true"></div>
+        <section id="inicio" class="dash-view" aria-labelledby="dash-home-title" hidden>
+          <div class="dash-welcome">
+            <div class="dash-hero">
+              <div class="dash-hero-copy">
+                <h1 id="dash-home-title" tabindex="-1">Mi espacio <span>Picta.</span></h1>
+                <p>Revisa tus pedidos y encuentra tus tableros y recursos para el día a día.</p>
+                <a class="btn btn-primary" href="#tableros">Abrir mis tableros <svg class="icon" aria-hidden="true"><use href="#dash-arrow"/></svg></a>
+              </div>
+              <div class="picta-motion dash-hero-art picta-flow-art" data-lottie="assets/motion/panel/lottie.json" data-motion-autoplay data-motion-loop aria-hidden="true">
+                <img class="picta-motion-static" src="assets/motion/panel/poster.webp" alt="" width="1120" height="480" loading="lazy" decoding="async">
+                <div class="picta-motion-layer"></div>
+              </div>
+            </div>
+            <dl class="dash-stats dash-home-stats">
+              <div class="dash-stat">
+                <span class="dash-stat-icon" aria-hidden="true"><svg class="icon"><use href="#dash-box"/></svg></span>
+                <dt>Pedidos totales</dt><dd data-summary="total">—</dd>
+              </div>
+              <div class="dash-stat">
+                <span class="dash-stat-icon" aria-hidden="true"><svg class="icon"><use href="#dash-clock"/></svg></span>
+                <dt>En curso</dt><dd data-summary="en_curso">—</dd>
+              </div>
+              <div class="dash-stat">
+                <span class="dash-stat-icon" aria-hidden="true"><svg class="icon"><use href="#dash-check"/></svg></span>
+                <dt>Completados</dt><dd data-summary="entregados">—</dd>
+              </div>
+            </dl>
+          </div>
+          <div class="dash-home-grid">
+            <section class="dash-card dash-history" aria-labelledby="dash-recent-title">
+              <div class="dash-card-heading">
+                <h2 id="dash-recent-title">Pedidos recientes</h2>
+                <a class="btn btn-link" href="#pedidos">Ver historial <svg class="icon" aria-hidden="true"><use href="#dash-arrow"/></svg></a>
+              </div>
+              <div id="dash-recent-results" aria-busy="false">
+                <ul id="dash-recent-list" class="dash-orders dash-orders-compact" aria-label="Pedidos recientes" hidden></ul>
+                <div id="dash-recent-empty" class="dash-empty">
+                  <span class="dash-empty-icon" aria-hidden="true"><svg class="icon"><use href="#dash-box"/></svg></span>
+                  <p id="dash-recent-status" role="status"></p>
+                  <a id="dash-recent-catalog" class="btn btn-outline-primary" href="index.html#formatos" hidden>Ver catálogo</a>
+                  <button id="dash-retry-recent" class="btn btn-outline-primary" type="button" hidden>Reintentar</button>
+                </div>
+              </div>
+            </section>
+            <section class="dash-card dash-resources" aria-labelledby="dash-resources-title">
+              <h2 id="dash-resources-title">Recursos para usar Picta</h2>
+              <a class="dash-resource" href="index.html#stickers">
+                <span class="dash-avatar dash-resource-stickers" aria-hidden="true"><img src="assets/pictograms/56.webp" width="320" height="320" alt=""></span>
+                <span><strong>Prueba de Picta Esencial</strong><small>Agrega una ficha al tablero «Mi día».</small></span>
+                <svg class="icon dash-resource-arrow" aria-hidden="true"><use href="#dash-arrow"/></svg>
+              </a>
+              <a class="dash-resource" href="index.html#guia">
+                <span class="dash-avatar dash-resource-guide" aria-hidden="true"><img src="assets/pictograms/34.webp" width="320" height="320" alt=""></span>
+                <span><strong>Guía para familias</strong><small>Ideas para casa y la escuela.</small></span>
+                <svg class="icon dash-resource-arrow" aria-hidden="true"><use href="#dash-arrow"/></svg>
+              </a>
+            </section>
+          </div>
+        </section>
+
+        <section id="pedidos" class="dash-view" aria-labelledby="dash-orders-title" hidden>
+          <div class="dash-intro">
+            <div>
+              <h1 id="dash-orders-title" tabindex="-1">Mis pedidos</h1>
+              <p>Consulta tus pedidos confirmados y sigue su estado.</p>
+            </div>
+            <a class="btn btn-primary" href="carrito.html">Ver compras y pagos</a>
+          </div>
+          <dl class="dash-stats">
+            <div class="dash-stat">
+              <span class="dash-stat-icon" aria-hidden="true"><svg class="icon"><use href="#dash-box"/></svg></span>
+              <dt>Pedidos totales</dt><dd data-summary="total">—</dd>
+            </div>
+            <div class="dash-stat">
+              <span class="dash-stat-icon" aria-hidden="true"><svg class="icon"><use href="#dash-clock"/></svg></span>
+              <dt>En curso</dt><dd data-summary="en_curso">—</dd>
+            </div>
+            <div class="dash-stat">
+              <span class="dash-stat-icon" aria-hidden="true"><svg class="icon"><use href="#dash-check"/></svg></span>
+              <dt>Completados</dt><dd data-summary="entregados">—</dd>
+            </div>
+          </dl>
+          <div class="dash-card dash-history">
+            <div class="dash-card-heading">
+              <h2>Historial de pedidos</h2>
+              <div class="dash-history-actions">
+                <label class="visually-hidden" for="dash-state-filter">Estado del pedido</label>
+                <select class="form-select" id="dash-state-filter">
+                  <option value="all">Todos los estados</option>
+                  <option value="pendiente">Pendientes</option>
+                  <option value="confirmado">Confirmados</option>
+                  <option value="en_preparacion">En preparación</option>
+                  <option value="en_camino">En camino</option>
+                  <option value="listo_para_recojo">Listos para recojo</option>
+                  <option value="entregado">Entregados</option>
+                  <option value="cancelado">Cancelados</option>
+                </select>
+                <button class="btn btn-outline-primary dash-reload" id="dash-refresh-orders" type="button">
+                  <svg class="icon" aria-hidden="true"><use href="#dash-refresh"/></svg> Actualizar
+                </button>
+              </div>
+            </div>
+            <div class="dash-list" id="dash-order-results" aria-busy="false">
+              <ul id="dash-order-list" class="dash-orders" aria-label="Pedidos" hidden></ul>
+              <div class="dash-empty" id="dash-order-empty" hidden>
+                <span class="dash-empty-icon" aria-hidden="true"><svg class="icon"><use href="#dash-bag"/></svg></span>
+                <h3 id="dash-empty-title"></h3>
+                <p id="dash-empty-copy"></p>
+                <a id="dash-empty-catalog" class="btn btn-outline-primary" href="index.html#formatos" hidden>Ver catálogo</a>
+              </div>
+            </div>
+            <nav id="dash-order-pagination" class="dash-pagination" aria-label="Páginas del historial" hidden>
+              <button class="btn btn-outline-primary" id="dash-previous" type="button">Anterior</button>
+              <span id="dash-page" role="status"></span>
+              <button class="btn btn-outline-primary" id="dash-next" type="button">Siguiente</button>
+            </nav>
+          </div>
+        </section>
+
+        <section id="solicitudes" class="dash-view" aria-labelledby="dash-requests-title" hidden>
+          <header class="dash-requests-header">
+            <div class="dash-requests-intro">
+              <h1 id="dash-requests-title" tabindex="-1">Mis encargos</h1>
+              <p>Sigue el diseño de tus pictogramas personalizados y revisa el estado de tus consultas.</p>
+              <a class="btn btn-primary" href="index.html#personalizacion">Personalizar mi cuadernillo
+                <svg class="icon" aria-hidden="true"><use href="#dash-arrow"/></svg>
+              </a>
+            </div>
+            <div class="dash-requests-art" aria-hidden="true">
+              <img src="assets/pictograms/60.webp" width="320" height="320" alt="" decoding="async">
+            </div>
+          </header>
+          <section class="dash-card" aria-labelledby="dash-requests-history-title">
+            <div class="dash-card-heading">
+              <h2 id="dash-requests-history-title" tabindex="-1">Historial</h2>
+              <p class="dash-secondary" id="dash-requests-status" role="status" aria-atomic="true"></p>
+            </div>
+            <div class="dash-requests-results" id="dash-requests-results" aria-busy="false">
+              <ul class="dash-requests-list" id="dash-requests-list" aria-label="Encargos y consultas" hidden></ul>
+              <div class="dash-empty" id="dash-requests-empty" hidden>
+                <span class="dash-empty-icon" aria-hidden="true"><svg class="icon"><use href="#dash-book"/></svg></span>
+                <h3>Aún no tienes encargos ni consultas</h3>
+                <p>Cuando pidas un paquete de pictogramas o envíes una consulta, podrás seguirla aquí.</p>
+              </div>
+              <div class="dash-empty" id="dash-requests-error" hidden>
+                <p>Vuelve a intentar cargar el historial.</p>
+                <button class="btn btn-outline-primary" id="dash-retry-requests" type="button">Reintentar</button>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <section id="tableros" class="dash-view" aria-labelledby="dash-boards-title" hidden>
+          <header class="dash-view-heading">
+            <h1 id="dash-boards-title" tabindex="-1">Mis tableros</h1>
+            <p class="dash-secondary" id="dash-access-status" role="status"></p>
+            <p class="dash-board-actions"><a class="btn btn-outline-primary" id="dash-buy-access" href="index.html#acceso-digital">Ver Picta Esencial</a>
+              <button class="btn btn-outline-primary" id="dash-retry-access" type="button" hidden>Reintentar</button></p>
+          </header>
+          <div id="sticker-workspace" data-private-board hidden>
+            <div class="sticker-layout">
+              <nav class="diary-navigation" aria-label="Páginas de Mi diario visual">
+                <p class="diary-page-counter"><strong>Páginas</strong><span id="diary-page-number" aria-live="polite">1 de 8</span></p>
+                <button class="icon-button diary-step" type="button" data-diary-step="-1" aria-label="Página anterior"><svg class="icon" aria-hidden="true"><use href="#dash-arrow"/></svg></button>
+                <ol class="diary-pages" id="diary-pages" aria-label="Todas las páginas">
+                  <li><button type="button" data-sticker-mode="day" aria-pressed="true" aria-controls="sticker-board"><span class="diary-page-thumb" aria-hidden="true"><img src="assets/pictograms/01.webp" width="320" height="320" alt=""><span class="diary-page-index">1</span></span><span>Mi día</span></button></li>
+                  <li><button type="button" data-sticker-mode="phrases" aria-pressed="false" aria-controls="sticker-board"><span class="diary-page-thumb" aria-hidden="true"><img src="assets/pictograms/04.webp" width="320" height="320" alt=""><span class="diary-page-index">2</span></span><span>Yo comunico</span></button></li>
+                  <li><button type="button" data-sticker-mode="say" aria-pressed="false" aria-controls="sticker-board"><span class="diary-page-thumb" aria-hidden="true"><img src="assets/pictograms/09.webp" width="320" height="320" alt=""><span class="diary-page-index">3</span></span><span>Puedo decir</span></button></li>
+                  <li><button type="button" data-sticker-mode="sensory" aria-pressed="false" aria-controls="sticker-board"><span class="diary-page-thumb" aria-hidden="true"><img src="assets/pictograms/10.webp" width="320" height="320" alt=""><span class="diary-page-index">4</span></span><span>Algo me molesta</span></button></li>
+                  <li><button type="button" data-sticker-mode="people" aria-pressed="false" aria-controls="sticker-board"><span class="diary-page-thumb" aria-hidden="true"><img src="assets/pictograms/19.webp" width="320" height="320" alt=""><span class="diary-page-index">5</span></span><span>Personas y emociones</span></button></li>
+                  <li><button type="button" data-sticker-mode="care" aria-pressed="false" aria-controls="sticker-board"><span class="diary-page-thumb" aria-hidden="true"><img src="assets/pictograms/39.webp" width="320" height="320" alt=""><span class="diary-page-index">6</span></span><span>Cuidado</span></button></li>
+                  <li><button type="button" data-sticker-mode="collection" aria-pressed="false" aria-controls="sticker-board"><span class="diary-page-thumb" aria-hidden="true"><img src="assets/pictograms/65.webp" width="320" height="320" alt=""><span class="diary-page-index">7</span></span><span>Comunicar, alimentos y lugares</span></button></li>
+                  <li><button type="button" data-sticker-mode="school" aria-pressed="false" aria-controls="sticker-board"><span class="diary-page-thumb" aria-hidden="true"><img src="assets/pictograms/56.webp" width="320" height="320" alt=""><span class="diary-page-index">8</span></span><span>Escuela, juguetes y objetos</span></button></li>
+                </ol>
+                <button class="icon-button diary-step" type="button" data-diary-step="1" aria-label="Página siguiente"><svg class="icon" aria-hidden="true"><use href="#dash-arrow"/></svg></button>
+              </nav>
+              <section class="studio-panel sticker-board" id="sticker-board" aria-labelledby="sticker-board-title">
+                <div class="live-board-window">
+                  <div class="essentials-board-toolbar">
+                    <h3 id="sticker-board-title">Mi día</h3>
+                    <div class="diary-view-actions">
+                      <button class="btn btn-primary diary-bank-link" data-diary-bank type="button" aria-haspopup="dialog" aria-controls="diary-picker">Elegir ficha</button>
+                      <button class="btn btn-outline-primary diary-fullscreen" id="dash-fullscreen" type="button" aria-pressed="false" aria-controls="tableros" aria-label="Pantalla completa">
+                        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path class="diary-expand-icon" d="M8 4H4v4m12-4h4v4M4 16v4h4m12-4v4h-4"/><path class="diary-collapse-icon" d="M4 8h4V4m8 0v4h4m-16 8h4v4m12-4h-4v4"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="live-board-sheet">
+                    <p id="sticker-status" class="diary-instruction" role="status"></p>
+                    <div id="sticker-rows"></div>
+                  </div>
+                </div>
+                <div class="sticker-board-tools">
+                  <button class="btn btn-link" id="sticker-undo" type="button" disabled>Deshacer</button>
+                  <p id="diary-save-status" role="status" hidden></p>
+                  <button class="btn btn-outline-primary" id="sticker-save" type="button" hidden>Reintentar guardado</button>
+                </div>
+              </section>
+              <dialog class="studio-panel sticker-bank diary-picker" id="diary-picker" aria-labelledby="sticker-bank-title">
+                <div class="sticker-panel-heading">
+                  <h3 id="sticker-bank-title" tabindex="-1">Elige una ficha</h3>
+                  <button class="btn btn-outline-primary" data-diary-close type="button">Cerrar</button>
+                </div>
+                <details class="diary-search" id="diary-search">
+                  <summary>Buscar por nombre</summary>
+                  <label for="sticker-search" class="visually-hidden">Buscar pictograma</label>
+                  <input class="form-control" id="sticker-search" type="search" placeholder="Buscar pictograma" maxlength="60">
+                </details>
+                <p id="sticker-count" class="visually-hidden" role="status"></p>
+                <ul class="sticker-bank-grid" id="sticker-bank" role="list"></ul>
+                <button class="btn btn-outline-primary" data-diary-remove type="button" hidden>Quitar ficha de esta casilla</button>
+              </dialog>
+            </div>
+          </div>
+        </section>
+
+        <section id="perfil" class="dash-view" aria-labelledby="dash-profile-title" hidden>
+          <div class="dash-intro">
+            <div>
+              <h1 id="dash-profile-title" tabindex="-1">Mi perfil</h1>
+              <p>Administra tus datos personales y el acceso a tu cuenta.</p>
+            </div>
+          </div>
+          <div class="dash-profile-grid">
+            <section class="dash-card dash-profile-card" aria-labelledby="dash-profile-data">
+              <div class="dash-profile-cover">
+                <span class="dash-avatar dash-profile-avatar" aria-hidden="true"><span data-dash-initial></span><img id="dash-avatar-image" alt="" width="96" height="96" hidden></span>
+                <div class="dash-profile-avatar-copy">
+                  <h2>Tu avatar</h2>
+                  <button class="btn btn-outline-primary" id="dash-avatar-open" type="button" aria-haspopup="dialog" aria-controls="dash-avatar-dialog">Cambiar sticker</button>
+                  <p id="dash-avatar-status" role="status"></p>
+                </div>
+              </div>
+              <div class="dash-profile-content">
+                <h2 id="dash-profile-data">Datos personales</h2>
+                <dl class="dash-profile-email">
+                  <dt>Correo electrónico</dt>
+                  <dd id="dash-profile-email">—</dd>
+                  <dt>Cuenta creada</dt>
+                  <dd id="dash-profile-date">—</dd>
+                </dl>
+                <form id="dash-profile-form" class="dash-profile-form" novalidate aria-busy="false">
+                  <label for="dash-profile-name">Nombre</label>
+                  <input class="form-control" id="dash-profile-name" name="nombre" type="text" autocomplete="name" maxlength="100" required disabled aria-describedby="dash-profile-name-error">
+                  <p id="dash-profile-name-error" class="dash-form-error" hidden>Escribe un nombre de hasta 100 caracteres.</p>
+                  <div class="dash-profile-actions">
+                    <button class="btn btn-primary" id="dash-save-profile" type="submit" disabled>Guardar cambios</button>
+                    <button class="btn btn-outline-primary" id="dash-cancel-profile" type="button" disabled>Descartar cambios</button>
+                  </div>
+                </form>
+                <div class="dash-profile-feedback">
+                  <p id="dash-profile-status" role="status"></p>
+                  <p id="dash-profile-error" class="dash-form-error" role="alert"></p>
+                  <button class="btn btn-outline-primary" id="dash-retry-profile" type="button" hidden>Volver a cargar el perfil</button>
+                </div>
+              </div>
+            </section>
+            <div class="dash-profile-options">
+              <section class="dash-card dash-plan" aria-labelledby="dash-plan-title">
+                <h2 id="dash-plan-title">Mi plan</h2>
+                <p id="dash-profile-plan" role="status">Consultando tu plan…</p>
+                <p class="dash-sandbox-actions"><a class="btn btn-primary" href="#tableros">Ir a mis tableros</a>
+                  <a class="btn btn-outline-primary" href="index.html#acceso-digital">Ver planes y renovar</a></p>
+              </section>
+              <section class="dash-card dash-security" aria-labelledby="dash-security-title">
+                <h2 id="dash-security-title"><svg class="icon" aria-hidden="true"><use href="#dash-lock"/></svg> Seguridad</h2>
+                <a class="btn btn-outline-primary" href="index.html?cuenta=contrasena">Cambiar contraseña</a>
+                <button class="btn btn-link" id="dash-signout" type="button"><svg class="icon" aria-hidden="true"><use href="#dash-exit"/></svg> Cerrar sesión</button>
+              </section>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+  <footer class="site-footer" id="contacto" data-picta-footer></footer>
+
+  <dialog class="dash-dialog dash-avatar-dialog" id="dash-avatar-dialog" aria-labelledby="dash-avatar-title">
+    <h2 id="dash-avatar-title" tabindex="-1">Elige tu sticker</h2>
+    <form id="dash-avatar-form" novalidate aria-busy="false">
+      <fieldset id="dash-avatar-choices">
+        <legend class="visually-hidden">Stickers para el perfil</legend>
+      </fieldset>
+      <p id="dash-avatar-error" class="dash-form-error" role="alert" hidden></p>
+      <div class="dash-profile-actions">
+        <button class="btn btn-primary" id="dash-avatar-save" type="submit">Guardar avatar</button>
+        <button class="btn btn-outline-primary" id="dash-avatar-cancel" type="button">Cancelar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="dash-dialog" id="dash-signout-dialog" aria-labelledby="dash-signout-title" aria-describedby="dash-signout-copy">
+    <h2 id="dash-signout-title">¿Cerrar sesión?</h2>
+    <p id="dash-signout-copy">Si cierras sesión ahora, se perderán los cambios que aún no guardaste.</p>
+    <form method="dialog" class="dash-profile-actions" novalidate>
+      <button class="btn btn-outline-primary" type="submit" value="cancel" autofocus>Seguir editando</button>
+      <button class="btn btn-primary" type="submit" value="signout">Cerrar sesión</button>
+    </form>
+  </dialog>
+
+  <dialog class="dash-dialog" id="dash-detail" aria-labelledby="dash-detail-title">
+    <button class="icon-button dash-dialog-close" data-close-dialog type="button" aria-label="Cerrar detalle del pedido"><svg class="icon" aria-hidden="true"><use href="#dash-close"/></svg></button>
+    <h2 id="dash-detail-title" tabindex="-1"></h2>
+    <p id="dash-detail-date" class="dash-secondary"></p>
+    <div id="dash-detail-meta" class="dash-detail-meta"></div>
+    <h3>Estado del pedido</h3>
+    <ol id="dash-timeline" class="dash-timeline" aria-label="Progreso del pedido"></ol>
+    <p id="dash-detail-fulfillment" class="dash-secondary"></p>
+    <a id="dash-detail-boards" class="btn btn-primary mt-3" href="#tableros" hidden>Abrir mis tableros</a>
+  </dialog>
+
+</body>
+</html>

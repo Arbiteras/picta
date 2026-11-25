@@ -9,23 +9,21 @@
   const alert = get("account-error");
   const status = get("account-status");
   const form = get("account-auth-form");
-  const profile = get("account-profile");
   const name = get("account-name");
   const email = get("account-email");
   const password = get("account-password");
-  const profileName = get("profile-name");
+  const adult = get("account-adult");
   const submit = get("account-submit");
-  const save = get("account-save");
   const links = get("account-links");
   const switchCopy = get("account-switch-copy");
   const switchButton = get("account-switch");
   const resend = get("account-resend");
-  const retry = get("account-retry");
+  const backToProfile = get("account-back-profile");
   const logout = get("account-logout");
   const togglePassword = get("account-password-toggle");
   const forgot = dialog.querySelector(".account-forgot");
   const close = dialog.querySelector(".account-close");
-  const inputs = [name, email, password, profileName];
+  const inputs = [name, email, password, adult];
   const buttons = [...dialog.querySelectorAll("button")];
 
   const views = {
@@ -36,7 +34,6 @@
     reset: ["Nueva contraseña", "Elige una contraseña para volver a entrar a tu cuenta Picta.", "Guardar contraseña"],
     confirmation: ["Revisa tu correo", "Si hay una confirmación pendiente, busca el enlace de Picta en tu bandeja de entrada o en correo no deseado.", "", "login"],
     recoverSent: ["Revisa tu correo", "Si el correo está asociado a una cuenta, recibirás un enlace para recuperar tu contraseña.", "", "login"],
-    account: ["Mi cuenta", "Consulta tus datos y actualiza tu nombre."],
     loading: ["Mi cuenta", "Estamos comprobando tu sesión."],
     unavailable: ["Cuenta no disponible", "No pudimos conectar el acceso a Picta. Vuelve a intentarlo más tarde."]
   };
@@ -56,34 +53,39 @@
   };
 
   const pageUrl = new URL(window.location.href);
+  const accountEntry = pageUrl.searchParams.get("cuenta");
+  const sections = ["inicio", "pedidos", "perfil", "solicitudes", "tableros", "carrito"];
+  const requestedSection = sections.includes(accountEntry) ? accountEntry : accountEntry === "contrasena" ? "perfil" : "inicio";
+  const legacyCatalog = accountEntry === "catalogo";
+  const resume = requestedSection === "carrito" && /^[0-9a-f-]{36}$/i.test(pageUrl.searchParams.get("compra") || "")
+    ? pageUrl.searchParams.get("compra") : "";
+  const destination = requestedSection === "carrito" ? "carrito.html" + (resume ? "?compra=" + resume : "")
+    : legacyCatalog ? "index.html#formatos" : "dashboard.html#" + requestedSection;
   const hashParams = new URLSearchParams(pageUrl.hash.slice(1));
   const callbackType = hashParams.has("access_token") ? hashParams.get("type") : null;
   const linkError = hashParams.get("error_code") || pageUrl.searchParams.get("error_code");
+  if (legacyCatalog && !callbackType && !linkError) {
+    window.location.replace(destination);
+    return;
+  }
   const canUseLinks = pageUrl.protocol === "https:" ||
     (pageUrl.protocol === "http:" && ["localhost", "127.0.0.1", "[::1]"].includes(pageUrl.hostname));
   const redirectUrl = pageUrl.origin + pageUrl.pathname;
-  const client = dialog.dataset.supabaseKey && window.supabase?.createClient(
-    dialog.dataset.supabaseUrl, dialog.dataset.supabaseKey, {
-      auth: { flowType: "implicit" },
-      global: {
-        fetch: (url, options) => {
-          const signal = AbortSignal.timeout(16000);
-          return fetch(url, {
-            ...options,
-            signal: options?.signal ? AbortSignal.any([options.signal, signal]) : signal
-          });
-        }
-      }
-    }
-  );
+  const client = window.pictaSupabase;
 
   let mode = "loading";
   let session = null;
   let initialized = !client;
   let recovering = false;
   let working = false;
-  let profileRequest = 0;
-  let profileReady = false;
+  let returnFocus = null;
+
+  function confirmationUrl() {
+    const url = new URL(redirectUrl);
+    if (sections.includes(accountEntry)) url.searchParams.set("cuenta", requestedSection);
+    if (resume) url.searchParams.set("compra", resume);
+    return url.href;
+  }
 
   function setPasswordVisible(visible) {
     password.type = visible ? "text" : "password";
@@ -104,10 +106,12 @@
 
   function validate(field) {
     let message = "";
-    if (field === name || field === profileName) {
+    if (field === name) {
       if (!field.value.trim() || !field.validity.valid) message = "Escribe un nombre de hasta 100 caracteres.";
     } else if (field === email) {
       if (!field.validity.valid) message = "Escribe un correo electrónico válido.";
+    } else if (field === adult) {
+      if (!field.checked) message = "Confirma que eres mayor de edad.";
     } else if (!field.value) {
       message = "Escribe tu contraseña.";
     } else if (mode !== "login" && [...field.value].length < 8) {
@@ -128,12 +132,12 @@
     setPasswordVisible(false);
     inputs.forEach((field) => fieldError(field));
     form.hidden = !action;
-    profile.hidden = true;
     submit.querySelector("span").textContent = action || "";
     name.closest("[data-account-field]").hidden = next !== "register";
+    adult.closest("[data-account-field]").hidden = next !== "register";
     email.closest("[data-account-field]").hidden = next === "reset";
     password.closest("[data-account-field]").hidden = !newPassword && next !== "login";
-    for (const field of [name, email, password]) {
+    for (const field of inputs) {
       field.disabled = field.closest("[data-account-field]").hidden;
     }
     email.autocomplete = newPassword ? "email" : "username";
@@ -143,65 +147,61 @@
     forgot.hidden = next !== "login";
     switchCopy.hidden = !prompt;
     switchCopy.textContent = prompt || "";
-    switchButton.hidden = !alternate;
+    switchButton.hidden = !alternate || (Boolean(session) && ["recover", "recoverSent"].includes(next));
     switchButton.textContent = alternate === "login" && !prompt ? "Volver a iniciar sesión" : views[alternate]?.[0] || "";
     switchButton.dataset.accountMode = alternate || "";
     resend.hidden = next !== "confirmation";
-    retry.hidden = true;
-    logout.hidden = next !== "account" && next !== "reset";
+    backToProfile.hidden = !session || !["recover", "recoverSent"].includes(next);
+    logout.hidden = next !== "reset";
     updateLinks();
     dialog.scrollTop = 0;
     if (focus && dialog.open) title.focus({ preventScroll: true });
   }
 
   function updateLinks() {
-    links.hidden = [switchButton, resend, retry, logout].every((button) => button.hidden);
+    links.hidden = [switchButton, resend, backToProfile, logout].every((item) => item.hidden);
   }
 
   function defaultMode() {
     if (!client) return "unavailable";
     if (!initialized) return "loading";
     if (recovering && session) return "reset";
-    return session ? "account" : "login";
+    return "login";
   }
 
   function openAccount(next = defaultMode()) {
     showMode(next, false);
     if (!dialog.open) dialog.showModal();
     title.focus({ preventScroll: true });
-    if (next === "account") void loadProfile();
   }
 
-  async function loadProfile() {
-    const user = session?.user;
-    if (!user || !dialog.open || mode !== "account") return;
-    const request = ++profileRequest;
-    profileReady = false;
-    profile.hidden = true;
-    retry.hidden = true;
-    updateLinks();
-    alert.textContent = "";
-    status.textContent = "Cargando tu perfil…";
+  window.pictaSignInForRequest = (trigger) => {
+    returnFocus = trigger;
+    openAccount();
+  };
 
-    try {
-      const { data, error } = await client.from("clientes").select("nombre, correo").eq("id", user.id).single();
-      if (request !== profileRequest || mode !== "account" || !dialog.open || session?.user.id !== user.id) return;
-      if (error) throw error;
-      get("profile-email").textContent = data.correo || user.email || "";
-      profileName.value = data.nombre || "";
-      profileReady = true;
-      profile.hidden = false;
-    } catch {
-      if (request !== profileRequest || mode !== "account" || !dialog.open) return;
-      alert.textContent = "No pudimos cargar tu perfil. Intenta volver a cargarlo.";
-      retry.hidden = false;
-      updateLinks();
-    }
-    status.textContent = "";
+  function finishLogin() {
+    if (returnFocus) dialog.close();
+    else window.location.assign(destination);
   }
 
   function renderSession() {
-    launch.querySelector("span").textContent = session ? "Mi cuenta" : "Iniciar sesión";
+    const opensDialog = !session || recovering;
+    const label = launch.querySelector("[data-account-label]");
+    const wasRecovering = launch.hasAttribute("data-recovery");
+    launch.toggleAttribute("data-recovery", recovering);
+    if (recovering) {
+      label.textContent = "Nueva contraseña";
+      launch.setAttribute("aria-label", "Nueva contraseña");
+      launch.removeAttribute("data-account-pending");
+    } else if (wasRecovering) window.dispatchEvent(new Event("picta:account-label"));
+    if (opensDialog) {
+      launch.setAttribute("aria-haspopup", "dialog");
+      launch.setAttribute("aria-controls", dialog.id);
+    } else {
+      launch.removeAttribute("aria-haspopup");
+      launch.removeAttribute("aria-controls");
+    }
   }
 
   async function run(button, pendingLabel, task) {
@@ -236,19 +236,19 @@
     const next = event.target.closest("[data-account-mode]")?.dataset.accountMode;
     if (next && !working) showMode(next);
   });
-  launch.addEventListener("click", () => openAccount());
+  launch.addEventListener("click", () => {
+    if (session && !recovering) window.location.assign("dashboard.html#inicio");
+    else openAccount();
+  });
   close.addEventListener("click", () => dialog.close());
   dialog.addEventListener("cancel", (event) => { if (working) event.preventDefault(); });
   dialog.addEventListener("close", () => {
-    profileRequest++;
-    profileReady = false;
     form.reset();
-    profile.reset();
-    get("profile-email").textContent = "";
-    launch.focus({ preventScroll: true });
+    const previous = returnFocus || launch;
+    previous.focus({ preventScroll: true });
+    returnFocus = null;
   });
   togglePassword.addEventListener("click", () => setPasswordVisible(password.type === "password"));
-  retry.addEventListener("click", () => { void loadProfile(); });
   for (const field of inputs) {
     field.addEventListener("input", () => {
       if (field.hasAttribute("aria-invalid")) validate(field);
@@ -258,7 +258,7 @@
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     if (working || !client) return;
-    const invalid = [name, email, password].filter((field) => !field.disabled && !validate(field));
+    const invalid = inputs.filter((field) => !field.disabled && !validate(field));
     if (invalid.length) {
       invalid[0].focus();
       return;
@@ -280,14 +280,14 @@
           email: address,
           password: secret,
           options: {
-            data: { nombre: name.value.trim() },
-            emailRedirectTo: canUseLinks ? redirectUrl : undefined
+            data: { nombre: name.value.trim(), mayor_de_edad: true },
+            emailRedirectTo: canUseLinks ? confirmationUrl() : undefined
           }
         });
       } else if (action === "recover") {
         result = await client.auth.resetPasswordForEmail(address, { redirectTo: redirectUrl });
       } else if (action === "resend") {
-        result = await client.auth.resend({ type: "signup", email: address, options: { emailRedirectTo: redirectUrl } });
+        result = await client.auth.resend({ type: "signup", email: address, options: { emailRedirectTo: confirmationUrl() } });
       } else if (action === "reset") {
         result = await client.auth.updateUser({ password: secret });
       }
@@ -297,29 +297,11 @@
         session = result.data.session || session;
         recovering = false;
         renderSession();
-        showMode("account");
-        await loadProfile();
-        if (action === "reset" && profileReady) status.textContent = "Cambiaste tu contraseña.";
+        if (action === "reset") window.location.assign("dashboard.html?clave=actualizada#perfil");
+        else finishLogin();
       } else {
         showMode(action === "recover" ? "recoverSent" : "confirmation");
       }
-    });
-  });
-
-  profile.addEventListener("submit", (event) => {
-    event.preventDefault();
-    if (!profileReady || !session || working) return;
-    if (!validate(profileName)) {
-      profileName.focus();
-      return;
-    }
-    const id = session.user.id;
-    const nombre = profileName.value.trim();
-    void run(save, "Guardando…", async () => {
-      const { data, error } = await client.from("clientes").update({ nombre }).eq("id", id).select("nombre").single();
-      if (error) throw error;
-      profileName.value = data.nombre;
-      status.textContent = "Guardamos tu nombre.";
     });
   });
 
@@ -337,7 +319,10 @@
   });
 
   launch.hidden = false;
-  if (!client) return;
+  if (!client) {
+    if (accountEntry) openAccount();
+    return;
+  }
   client.auth.onAuthStateChange((event, current) => {
     const previousUser = session?.user.id;
     const firstEvent = !initialized;
@@ -354,11 +339,22 @@
       history.replaceState(history.state, "", cleanUrl);
       openAccount(defaultMode());
       alert.textContent = errors[linkError] || "El enlace es inválido o venció. Solicita otro desde la ventana de cuenta.";
-    } else if (event === "PASSWORD_RECOVERY" || (firstEvent && callbackType && session)) {
+    } else if (recovering && session && (firstEvent || event === "PASSWORD_RECOVERY")) {
       window.setTimeout(() => openAccount(), 0);
+    } else if (firstEvent && accountEntry === "contrasena" && session) {
+      window.setTimeout(() => {
+        email.value = session?.user.email || "";
+        openAccount("recover");
+      }, 0);
+    } else if (firstEvent && session && (sections.includes(accountEntry) || callbackType)) {
+      window.location.replace(destination);
+    } else if (firstEvent && (sections.includes(accountEntry) || accountEntry === "contrasena")) {
+      window.setTimeout(() => openAccount(accountEntry === "contrasena" ? "recover" : defaultMode()), 0);
     } else if (!working && dialog.open && (mode === "loading" || previousUser !== current?.user.id)) {
       window.setTimeout(() => {
-        if (dialog.open && !working) openAccount();
+        if (!dialog.open || working) return;
+        if (session && !recovering) finishLogin();
+        else openAccount();
       }, 0);
     }
   });
